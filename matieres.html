@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Choix de la matière - Lacollecte</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #eef8ff;
+            color: #073b80;
+        }
+
+        .hero {
+            min-height: 205px;
+            background: linear-gradient(
+                135deg,
+                #0869d9,
+                #0752b8
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 30px;
+        }
+
+        .hero-content h1 {
+            font-size: 44px;
+            font-weight: 800;
+        }
+
+        .hero-content h1 span {
+            color: #ffc400;
+        }
+
+        .hero-content p {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .yellow-line {
+            width: 76px;
+            height: 5px;
+            background: #ffc400;
+            border-radius: 5px;
+            margin: 17px auto 0;
+        }
+
+        .main-content {
+            min-height: 450px;
+            padding: 40px;
+        }
+
+        .matieres-container {
+            width: 100%;
+            max-width: 900px;
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+
+            gap: 25px;
+        }
+
+        .matiere-card {
+            background: white;
+
+            min-height: 190px;
+
+            border-radius: 18px;
+
+            padding: 25px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            box-shadow:
+                0 8px 25px rgba(0, 83, 170, 0.12);
+
+            transition: 0.3s ease;
+        }
+
+        .matiere-card:hover {
+            transform: translateY(-6px);
+
+            box-shadow:
+                0 14px 30px rgba(0, 83, 170, 0.18);
+        }
+
+        .matiere-icon {
+            width: 75px;
+            height: 75px;
+
+            border-radius: 18px;
+
+            background: linear-gradient(
+                145deg,
+                #0c91ed,
+                #0754bd
+            );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin-bottom: 15px;
+        }
+
+        .matiere-icon i {
+            font-size: 35px;
+            color: white;
+        }
+
+        .matiere-card h2 {
+            font-size: 21px;
+            color: #063b83;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            width: 160px;
+            height: 40px;
+
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+
+            background: #0874e8;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 9px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+        .btn:hover {
+            background: #0057c7;
+        }
+
+        .message {
+            text-align: center;
+            font-size: 18px;
+            color: #7890aa;
+            padding: 50px;
+
+            grid-column: 1 / -1;
+        }
+
+        .footer {
+            min-height: 72px;
+            background: #063986;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 15px;
+
+            color: white;
+
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+
+            .hero-content h1 {
+                font-size: 31px;
+            }
+
+            .hero-content p {
+                font-size: 14px;
+            }
+
+            .main-content {
+                padding: 25px 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <header class="hero">
+
+        <div class="hero-content">
+
+            <h1>
+                CHOISISSEZ VOTRE <span>MATIÈRE</span>
+            </h1>
+
+            <p>
+                Sélectionnez une matière pour accéder aux ressources
+            </p>
+
+            <div class="yellow-line"></div>
+
+        </div>
+
+    </header>
+
+
+    <main class="main-content">
+
+        <div
+            id="matieresContainer"
+            class="matieres-container">
+        </div>
+
+    </main>
+
+
+    <footer class="footer">
+
+        <p>
+            Lacollecte — Votre réussite, notre priorité
+        </p>
+
+    </footer>
+
+
+    <script>
+
+        const API_URL = "https://la_collecte-backend.onrender.com";
+
+
+        // ==========================================
+        // RÉCUPÉRATION DES PARAMÈTRES
+        // ==========================================
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const niveauId =
+            params.get("niveau_id");
+
+
+        const semestreId =
+            params.get("semestre_id");
+
+
+        const typeRessourceId =
+            params.get("type_ressource_id");
+
+
+        // ==========================================
+        // TOKEN
+        // ==========================================
+
+        const token =
+            localStorage.getItem(
+                "access_token"
+            );
+
+
+        // ==========================================
+        // VÉRIFICATION CONNEXION
+        // ==========================================
+
+        if (!token) {
+
+            localStorage.setItem(
+                "page_apres_connexion",
+                window.location.href
+            );
+
+            window.location.href =
+                "connexion.html";
+
+        }
+
+
+        // ==========================================
+        // VÉRIFICATION PARAMÈTRES
+        // ==========================================
+
+        if (
+            !niveauId ||
+            !semestreId ||
+            !typeRessourceId
+        ) {
+
+            document.getElementById(
+                "matieresContainer"
+            ).innerHTML = `
+
+                <div class="message">
+
+                    Informations de navigation
+                    manquantes.
+
+                </div>
+
+            `;
+
+        } else {
+
+            chargerMatieres();
+
+        }
+
+
+        // ==========================================
+        // CHARGER LES MATIÈRES
+        // ==========================================
+
+        async function chargerMatieres() {
+
+            const container =
+                document.getElementById(
+                    "matieresContainer"
+                );
+
+
+            container.innerHTML = `
+
+                <div class="message">
+
+                    Chargement des matières...
+
+                </div>
+
+            `;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/matieres?niveau_id=${encodeURIComponent(niveauId)}&semestre_id=${encodeURIComponent(semestreId)}`,
+                        {
+                            method: "GET",
+
+                            headers: {
+
+                                "Authorization":
+                                    "Bearer " + token
+
+                            }
+
+                        }
+                    );
+
+
+                // ==================================
+                // TOKEN EXPIRÉ / INVALIDE
+                // ==================================
+
+                if (response.status === 401) {
+
+                    localStorage.removeItem(
+                        "access_token"
+                    );
+
+                    localStorage.setItem(
+                        "page_apres_connexion",
+                        window.location.href
+                    );
+
+                    window.location.href =
+                        "connexion.html";
+
+                    return;
+
+                }
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Impossible de récupérer les matières."
+                    );
+
+                }
+
+
+                const matieres =
+                    await response.json();
+
+
+                // ==================================
+                // AUCUNE MATIÈRE
+                // ==================================
+
+                if (
+                    !Array.isArray(matieres) ||
+                    matieres.length === 0
+                ) {
+
+                    container.innerHTML = `
+
+                        <div class="message">
+
+                            Aucune matière disponible
+                            pour ce niveau et ce semestre.
+
+                        </div>
+
+                    `;
+
+                    return;
+
+                }
+
+
+                // ==================================
+                // AFFICHAGE
+                // ==================================
+
+                container.innerHTML = "";
+
+
+                matieres.forEach(
+                    matiere => {
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        card.className =
+                            "matiere-card";
+
+
+                        const titre =
+                            echapperHTML(
+                                matiere.nom
+                            );
+
+
+                        card.innerHTML = `
+
+                            <div class="matiere-icon">
+
+                                <i class="fa-solid fa-book"></i>
+
+                            </div>
+
+                            <h2>
+                                ${titre}
+                            </h2>
+
+                            <a
+                                class="btn"
+                                href="ressources.html?niveau_id=${encodeURIComponent(niveauId)}&semestre_id=${encodeURIComponent(semestreId)}&type_ressource_id=${encodeURIComponent(typeRessourceId)}&matiere_id=${encodeURIComponent(matiere.id)}"
+                            >
+
+                                Voir les ressources
+
+                                <i class="fa-solid fa-arrow-right"></i>
+
+                            </a>
+
+                        `;
+
+
+                        container.appendChild(
+                            card
+                        );
+
+                    }
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Erreur matières :",
+                    error
+                );
+
+
+                container.innerHTML = `
+
+                    <div class="message">
+
+                        Impossible de charger
+                        les matières.
+
+                        <br><br>
+
+                        Vérifiez que l'API
+                        est démarrée.
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        // ==========================================
+        // SÉCURITÉ HTML
+        // ==========================================
+
+        function echapperHTML(texte) {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.textContent =
+                texte ?? "";
+
+
+            return div.innerHTML;
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

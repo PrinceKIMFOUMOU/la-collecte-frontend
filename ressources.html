@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ressources - La Collecte</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        header {
+            background: #0645ad;
+            color: white;
+            text-align: center;
+            padding: 30px 15px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        header p {
+            margin: 8px 0 0;
+            font-size: 18px;
+        }
+
+        main {
+            min-height: calc(100vh - 180px);
+            padding: 30px 20px;
+            background: white;
+        }
+
+        .retour {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #0645ad;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .retour:hover {
+            text-decoration: underline;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        #listeRessources {
+            margin-top: 30px;
+        }
+
+        .chargement {
+            text-align: center;
+            font-size: 20px;
+            color: #666;
+            padding: 30px;
+        }
+
+        .ressource {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            background: #fff;
+        }
+
+        .ressource h3 {
+            margin-top: 0;
+            color: #0645ad;
+        }
+
+        .ressource p {
+            margin: 8px 0;
+        }
+
+        .bouton-pdf {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 16px;
+            background: #0645ad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .bouton-pdf:hover {
+            background: #043681;
+        }
+
+        .message {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+
+        footer {
+            background: white;
+            color: #0645ad;
+            text-align: center;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>La Collecte</h1>
+    <p>Ressources pédagogiques</p>
+    
+</header>
+
+<main>
+
+    <a href="javascript:history.back()" class="retour">← Retour</a>
+
+    <h2>Ressources</h2>
+
+    <div id="listeRessources">
+        <div class="chargement">Chargement des ressources...</div>
+    </div>
+
+</main>
+
+<footer>
+                    <!-- ==================== LIENS RAPIDES ==================== -->
+
+                <div class="footer-column">
+
+                    <h3>
+                        Liens Rapides
+                    </h3>
+
+                    <ul>
+
+                        <li>
+                            <a href="index.html">
+                                Accueil
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="TD.html">
+                                TD
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="CC.html">
+                                Contrôle Continue
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="Session.html">
+                                Session
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="Cours.html">
+                                Cours
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+    © 2026 La Collecte - UIECC
+</footer>
+
+
+<script>
+
+const API_URL = "https://la_collecte-backend.onrender.com";
+
+const params = new URLSearchParams(window.location.search);
+
+const niveauId = params.get("niveau_id");
+const semestreId = params.get("semestre_id");
+const typeRessourceId = params.get("type_ressource_id");
+const matiereId = params.get("matiere_id");
+
+const liste = document.getElementById("listeRessources");
+
+
+/* ==========================================
+   VÉRIFICATION DE LA CONNEXION
+========================================== */
+
+const token = localStorage.getItem("access_token");
+
+if (!token) {
+
+    localStorage.setItem(
+        "page_apres_connexion",
+        window.location.href
+    );
+
+    window.location.href = "connexion.html";
+
+} else {
+
+    chargerRessources();
+
+}
+
+
+/* ==========================================
+   CHARGER LES RESSOURCES
+========================================== */
+
+async function chargerRessources() {
+
+    /*
+     * Les 4 paramètres sont obligatoires.
+     */
+
+    if (
+        !niveauId ||
+        !semestreId ||
+        !typeRessourceId ||
+        !matiereId
+    ) {
+
+        liste.innerHTML = `
+            <div class="message">
+                Informations de navigation manquantes.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    liste.innerHTML = `
+        <div class="chargement">
+            Chargement des ressources...
+        </div>
+    `;
+
+
+    try {
+
+        const url =
+            `${API_URL}/ressources` +
+            `?niveau_id=${encodeURIComponent(niveauId)}` +
+            `&semestre_id=${encodeURIComponent(semestreId)}` +
+            `&type_ressource_id=${encodeURIComponent(typeRessourceId)}` +
+            `&matiere_id=${encodeURIComponent(matiereId)}`;
+
+
+        const response = await fetch(
+            url,
+            {
+                method: "GET",
+
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }
+        );
+
+
+        /* ================================
+           TOKEN INVALIDE
+        ================================= */
+
+        if (response.status === 401) {
+
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("role_id");
+
+            localStorage.setItem(
+                "page_apres_connexion",
+                window.location.href
+            );
+
+            window.location.href =
+                "connexion.html";
+
+            return;
+        }
+
+
+        /* ================================
+           ACCÈS REFUSÉ
+        ================================= */
+
+        if (response.status === 403) {
+
+            liste.innerHTML = `
+                <div class="message">
+                    Accès refusé.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        if (!response.ok) {
+
+            const erreur =
+                await response.json().catch(() => ({}));
+
+            throw new Error(
+                erreur.detail ||
+                "Erreur lors du chargement des ressources."
+            );
+        }
+
+
+        const ressources =
+            await response.json();
+
+
+        liste.innerHTML = "";
+
+
+        /* ================================
+           AUCUNE RESSOURCE
+        ================================= */
+
+        if (
+            !Array.isArray(ressources) ||
+            ressources.length === 0
+        ) {
+
+            liste.innerHTML = `
+                <div class="message">
+                    Aucune ressource disponible
+                    pour cette sélection.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        /* ================================
+           AFFICHAGE
+        ================================= */
+
+        ressources.forEach(ressource => {
+
+            const element =
+                document.createElement("div");
+
+            element.className =
+                "ressource";
+
+
+            element.innerHTML = `
+
+                <h3>
+                    ${echapperHTML(ressource.titre)}
+                </h3>
+
+
+                ${
+                    ressource.description
+                    ?
+                    `
+                    <p>
+                        ${echapperHTML(
+                            ressource.description
+                        )}
+                    </p>
+                    `
+                    :
+                    ""
+                }
+
+
+                <p>
+                    <strong>Matière :</strong>
+                    ${echapperHTML(
+                        ressource.matiere
+                    )}
+                </p>
+
+
+                <p>
+                    <strong>Type :</strong>
+                    ${echapperHTML(
+                        ressource.type_ressource
+                    )}
+                </p>
+
+
+                <p>
+                    <strong>Niveau :</strong>
+                    ${echapperHTML(
+                        ressource.niveau
+                    )}
+                </p>
+
+
+                <p>
+                    <strong>Semestre :</strong>
+                    ${echapperHTML(
+                        ressource.semestre
+                    )}
+                </p>
+
+
+                <p>
+                    <strong>
+                        Année académique :
+                    </strong>
+
+                    ${echapperHTML(
+                        ressource.annee_academique
+                    )}
+                </p>
+
+
+                <button
+                    class="bouton-pdf"
+                    onclick="ouvrirPDF(${ressource.id})"
+                >
+                    📄 Ouvrir le PDF
+                </button>
+
+            `;
+
+
+            liste.appendChild(element);
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Erreur chargement ressources :",
+            error
+        );
+
+
+        liste.innerHTML = `
+            <div class="message">
+
+                Impossible de charger les ressources.
+
+                <br><br>
+
+                ${echapperHTML(
+                    error.message
+                )}
+
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* ==========================================
+   OUVRIR LE PDF
+========================================== */
+
+async function ouvrirPDF(ressourceId) {
+
+    const token =
+        localStorage.getItem("access_token");
+
+
+    if (!token) {
+
+        localStorage.setItem(
+            "pdf_a_ouvrir",
+            String(ressourceId)
+        );
+
+        localStorage.setItem(
+            "page_pdf_retour",
+            window.location.href
+        );
+
+        window.location.href =
+            "connexion.html";
+
+        return;
+    }
+
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/ressources/${ressourceId}/fichier`,
+            {
+                method: "GET",
+
+                headers: {
+                    "Authorization":
+                        "Bearer " + token
+                }
+            }
+        );
+
+
+        /* ================================
+           TOKEN EXPIRÉ
+        ================================= */
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            localStorage.removeItem(
+                "role_id"
+            );
+
+
+            localStorage.setItem(
+                "pdf_a_ouvrir",
+                String(ressourceId)
+            );
+
+
+            localStorage.setItem(
+                "page_pdf_retour",
+                window.location.href
+            );
+
+
+            window.location.href =
+                "connexion.html";
+
+            return;
+        }
+
+
+        if (response.status === 403) {
+
+            alert(
+                "Vous n'avez pas accès à cette ressource."
+            );
+
+            return;
+        }
+
+
+        if (!response.ok) {
+
+            const erreur =
+                await response.json().catch(
+                    () => ({})
+                );
+
+
+            throw new Error(
+                erreur.detail ||
+                "Impossible d'ouvrir le PDF."
+            );
+        }
+
+
+        const blob =
+            await response.blob();
+
+
+        const url =
+            window.URL.createObjectURL(blob);
+
+
+        const nouvelleFenetre =
+            window.open(
+                url,
+                "_blank"
+            );
+
+
+        if (!nouvelleFenetre) {
+
+            alert(
+                "Le navigateur a bloqué l'ouverture du PDF. Autorisez les fenêtres contextuelles."
+            );
+
+        }
+
+
+        /*
+         * Libération de l'URL temporaire
+         * après un court délai.
+         */
+
+        setTimeout(() => {
+
+            window.URL.revokeObjectURL(url);
+
+        }, 60000);
+
+
+    } catch (error) {
+
+        console.error(
+            "Erreur ouverture PDF :",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Impossible d'ouvrir le PDF."
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   PROTECTION CONTRE L'INJECTION HTML
+========================================== */
+
+function echapperHTML(texte) {
+
+    if (
+        texte === null ||
+        texte === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    const div =
+        document.createElement("div");
+
+
+    div.textContent =
+        String(texte);
+
+
+    return div.innerHTML;
+
+}
+
+</script>
+
+</body>
+</html>

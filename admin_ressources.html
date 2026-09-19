@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gestion des ressources - La Collecte</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #222;
+        }
+
+        header {
+            background: #0057b8;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin-bottom: 8px;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1100px;
+            margin: 35px auto;
+        }
+
+        .retour {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #0057b8;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: #0057b8;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 6px;
+            padding: 11px 18px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .principal {
+            background: #f4c400;
+            color: #111;
+        }
+
+        .modifier {
+            background: #0057b8;
+            color: white;
+        }
+
+        .fichier {
+            background: #198754;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.85;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .ressource {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .ressource h3 {
+            color: #0057b8;
+            margin-bottom: 10px;
+        }
+
+        .ressource p {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .ressource-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        #message {
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 700px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>La Collecte</h1>
+    <p>Gestion des ressources pédagogiques</p>
+</header>
+
+    <div class="container">
+
+        <a href="admin.html" class="retour">
+            ← Retour administration
+        </a>
+
+        <!-- ========================= -->
+        <!-- AJOUT -->
+        <!-- ========================= -->
+
+        <div class="card">
+
+            <h2>➕ Ajouter une ressource</h2>
+
+            <form id="ajoutForm">
+
+                <label>Titre</label>
+                <input
+                    type="text"
+                    id="titre"
+                    required
+                    placeholder="Ex : TD Python - Chapitre 1"
+                >
+
+                <label>Description</label>
+                <textarea
+                    id="description"
+                    placeholder="Description de la ressource"
+                ></textarea>
+
+                <div class="grid">
+
+                    <div>
+                        <label>Type de ressource</label>
+
+                        <select id="type_ressource_id" required>
+                            <option value="">Sélectionner</option>
+                            <option value="1">TD</option>
+                            <option value="2">CC</option>
+                            <option value="3">Session</option>
+                            <option value="4">Cours</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Année académique</label>
+
+                        <select id="annee_academique_id" required>
+                            <option value="">Sélectionner</option>
+                            <option value="1">2024-2025</option>
+                            <option value="2">2025-2026</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Niveau</label>
+
+                        <select id="niveau_id" required>
+                            <option value="">Sélectionner</option>
+                            <option value="1">1ere annee</option>
+                            <option value="2">2e annee</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="semestre_id">Semestre</label>
+
+                        <select id="semestre_id" required>
+                            <option value="">Sélectionner</option>
+                            <option value="1">Semestre 1</option>
+                            <option value="2">Semestre 2</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Matière</label>
+
+                        <select id="matiere_id" required>
+                            <option value="">Chargement...</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <label>Fichier PDF</label>
+
+                <input
+                    type="file"
+                    id="fichier"
+                    accept="application/pdf,.pdf"
+                    required
+                >
+
+                <button type="submit" class="btn principal">
+                    Ajouter la ressource
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- MESSAGE -->
+        <!-- ========================= -->
+
+        <div id="message"></div>
+
+
+        <!-- ========================= -->
+        <!-- LISTE -->
+        <!-- ========================= -->
+
+        <div class="card">
+
+            <h2>📚 Ressources existantes</h2>
+
+            <div id="listeRessources">
+                Chargement...
+            </div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- MODIFICATION -->
+        <!-- ========================= -->
+
+        <div
+            class="card hidden"
+            id="modificationCard"
+        >
+
+            <h2>✏️ Modifier la ressource</h2>
+
+            <form id="modificationForm">
+
+                <input
+                    type="hidden"
+                    id="modificationId"
+                >
+
+                <label>Titre</label>
+
+                <input
+                    type="text"
+                    id="modificationTitre"
+                    required
+                >
+
+                <label>Description</label>
+
+                <textarea
+                    id="modificationDescription"
+                ></textarea>
+
+                <div class="grid">
+
+                    <div>
+                        <label>Type</label>
+
+                        <select
+                            id="modificationType"
+                            required
+                        >
+                        <option value="">Sélectionner</option>
+                        <option value="1">TD</option>
+                        <option value="2">CC</option>
+                        <option value="3">Session</option>
+                        <option value="4">Cours</option>
+                    </select>
+                    </div>
+
+                    <div>
+                        <label>Année académique</label>
+
+                        <select
+                            id="modificationAnnee"
+                            required
+                        >
+                            <option value="1">2024-2025</option>
+                            <option value="2">2025-2026</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Niveau</label>
+
+                        <select
+                            id="modificationNiveau"
+                            required
+                        >
+                        <option value="">Selectionner</option>
+                        <option value="1">1ère annee</option>
+                        <option value="2">2e annee</option>
+                    </select>
+                    </div>
+
+                    <div>
+                        <label>Semestre</label>
+
+                        <select
+                            id="modificationSemestre"
+                            required
+                        >
+                        <option value="">Selectionner</option>
+                        <option value="1">Semestre 1</option>
+                        <option value="2">Semestre 2</option>
+                    </select>
+                    </div>
+
+                    <div>
+                        <label>Matière</label>
+
+                        <select
+                            id="modificationMatiere"
+                            required
+                        ></select>
+                    </div>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn modifier"
+                >
+                    Enregistrer les modifications
+                </button>
+
+                <button
+                    type="button"
+                    class="btn"
+                    onclick="fermerModification()"
+                >
+                    Annuler
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- REMPLACEMENT PDF -->
+        <!-- ========================= -->
+
+        <div
+            class="card hidden"
+            id="fichierCard"
+        >
+
+            <h2>🔄 Remplacer le PDF</h2>
+
+            <p id="fichierInfo"></p>
+
+            <br>
+
+            <input
+                type="file"
+                id="nouveauFichier"
+                accept="application/pdf,.pdf"
+            >
+
+            <br><br>
+
+            <button
+                class="btn fichier"
+                onclick="remplacerFichier()"
+            >
+                Remplacer le PDF
+            </button>
+
+            <button
+                class="btn"
+                onclick="fermerFichier()"
+            >
+                Annuler
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+    const API_URL = "https://la_collecte-backend.onrender.com";
+
+    const token = localStorage.getItem("access_token");
+
+    let ressources = [];
+
+    let ressourceModificationId = null;
+    let ressourceFichierId = null;
+
+
+    // ==========================================
+    // VÉRIFICATION TOKEN
+    // ==========================================
+
+    if (!token) {
+
+        window.location.href =
+            "connexion.html";
+
+    }
+
+
+    // ==========================================
+    // CHARGEMENT INITIAL
+    // ==========================================
+
+    chargerDonnees();
+
+
+    async function chargerDonnees() {
+
+        try {
+
+            await chargerRessources();
+
+        } catch (error) {
+
+            console.error(error);
+
+            afficherMessage(
+                "Impossible de charger les données.",
+                true
+            );
+
+        }
+
+    }
+
+
+    // ==========================================
+    // ÉLÉMENTS NIVEAU / SEMESTRE / MATIÈRE
+    // ==========================================
+
+    const selectNiveau =
+        document.getElementById("niveau_id");
+
+
+    const selectSemestre =
+        document.getElementById("semestre_id");
+
+
+    const selectMatiere =
+        document.getElementById("matiere_id");
+
+
+    const selectModificationNiveau =
+        document.getElementById(
+            "modificationNiveau"
+        );
+
+
+    const selectModificationSemestre =
+        document.getElementById(
+            "modificationSemestre"
+        );
+
+
+    const selectModificationMatiere =
+        document.getElementById(
+            "modificationMatiere"
+        );
+
+
+    // ==========================================
+    // CHANGEMENT NIVEAU AJOUT
+    // ==========================================
+
+    if (selectNiveau) {
+
+        selectNiveau.addEventListener(
+            "change",
+            function() {
+
+                chargerMatieresAjout();
+
+            }
+        );
+
+    }
+
+
+    // ==========================================
+    // CHANGEMENT SEMESTRE AJOUT
+    // ==========================================
+
+    if (selectSemestre) {
+
+        selectSemestre.addEventListener(
+            "change",
+            function() {
+
+                chargerMatieresAjout();
+
+            }
+        );
+
+    }
+
+
+    // ==========================================
+    // CHANGEMENT NIVEAU MODIFICATION
+    // ==========================================
+
+    if (selectModificationNiveau) {
+
+        selectModificationNiveau.addEventListener(
+            "change",
+            function() {
+
+                chargerMatieresModification();
+
+            }
+        );
+
+    }
+
+
+    // ==========================================
+    // CHANGEMENT SEMESTRE MODIFICATION
+    // ==========================================
+
+    if (selectModificationSemestre) {
+
+        selectModificationSemestre.addEventListener(
+            "change",
+            function() {
+
+                chargerMatieresModification();
+
+            }
+        );
+
+    }
+
+
+    // ==========================================
+    // CHARGER MATIÈRES POUR AJOUT
+    // ==========================================
+
+    async function chargerMatieresAjout(
+        matiereSelectionnee = null
+    ) {
+
+        if (!selectMatiere) {
+            return;
+        }
+
+
+        const niveauId =
+            selectNiveau
+            ? selectNiveau.value
+            : "";
+
+
+        const semestreId =
+            selectSemestre
+            ? selectSemestre.value
+            : "";
+
+
+        // ======================================
+        // PAS DE NIVEAU OU SEMESTRE
+        // ======================================
+
+        if (!niveauId || !semestreId) {
+
+            selectMatiere.innerHTML =
+                '<option value="">Sélectionner d\'abord le niveau et le semestre</option>';
+
+            selectMatiere.disabled = true;
+
+            return;
+
+        }
+
+
+        selectMatiere.disabled = true;
+
+
+        selectMatiere.innerHTML =
+            '<option value="">Chargement des matières...</option>';
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/matieres?niveau_id=${encodeURIComponent(niveauId)}&semestre_id=${encodeURIComponent(semestreId)}`,
+                    {
+                        method: "GET",
+
+                        headers: {
+
+                            "Authorization":
+                                "Bearer " + token
+
+                        }
+
+                    }
+                );
+
+
+            if (response.status === 401) {
+
+                localStorage.removeItem(
+                    "access_token"
+                );
+
+                window.location.href =
+                    "connexion.html";
+
+                return;
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Impossible de charger les matières."
+                );
+
+            }
+
+
+            const matieres =
+                await response.json();
+
+
+            selectMatiere.innerHTML =
+                '<option value="">Sélectionner</option>';
+
+
+            if (
+                !Array.isArray(matieres) ||
+                matieres.length === 0
+            ) {
+
+                selectMatiere.innerHTML =
+                    '<option value="">Aucune matière disponible</option>';
+
+                selectMatiere.disabled = true;
+
+                return;
+
+            }
+
+
+            matieres.forEach(
+                matiere => {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+                    option.value =
+                        matiere.id;
+
+
+                    option.textContent =
+                        matiere.nom;
+
+
+                    if (
+                        matiereSelectionnee &&
+                        String(matiere.id) ===
+                        String(matiereSelectionnee)
+                    ) {
+
+                        option.selected =
+                            true;
+
+                    }
+
+
+                    selectMatiere.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+
+            selectMatiere.disabled =
+                false;
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Erreur matières ajout :",
+                error
+            );
+
+
+            selectMatiere.innerHTML =
+                '<option value="">Erreur de chargement</option>';
+
+            selectMatiere.disabled =
+                true;
+
+        }
+
+    }
+
+
+    // ==========================================
+    // CHARGER MATIÈRES POUR MODIFICATION
+    // ==========================================
+
+    async function chargerMatieresModification(
+        matiereSelectionnee = null
+    ) {
+
+        if (!selectModificationMatiere) {
+            return;
+        }
+
+
+        const niveauId =
+            selectModificationNiveau
+            ? selectModificationNiveau.value
+            : "";
+
+
+        const semestreId =
+            selectModificationSemestre
+            ? selectModificationSemestre.value
+            : "";
+
+
+        // ======================================
+        // PAS DE NIVEAU OU SEMESTRE
+        // ======================================
+
+        if (!niveauId || !semestreId) {
+
+            selectModificationMatiere.innerHTML =
+                '<option value="">Sélectionner d\'abord le niveau et le semestre</option>';
+
+            selectModificationMatiere.disabled =
+                true;
+
+            return;
+
+        }
+
+
+        selectModificationMatiere.disabled =
+            true;
+
+
+        selectModificationMatiere.innerHTML =
+            '<option value="">Chargement des matières...</option>';
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/matieres?niveau_id=${encodeURIComponent(niveauId)}&semestre_id=${encodeURIComponent(semestreId)}`,
+                    {
+                        method: "GET",
+
+                        headers: {
+
+                            "Authorization":
+                                "Bearer " + token
+
+                        }
+
+                    }
+                );
+
+
+            if (response.status === 401) {
+
+                localStorage.removeItem(
+                    "access_token"
+                );
+
+                window.location.href =
+                    "connexion.html";
+
+                return;
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Impossible de charger les matières."
+                );
+
+            }
+
+
+            const matieres =
+                await response.json();
+
+
+            selectModificationMatiere.innerHTML =
+                '<option value="">Sélectionner</option>';
+
+
+            if (
+                !Array.isArray(matieres) ||
+                matieres.length === 0
+            ) {
+
+                selectModificationMatiere.innerHTML =
+                    '<option value="">Aucune matière disponible</option>';
+
+                selectModificationMatiere.disabled =
+                    true;
+
+                return;
+
+            }
+
+
+            matieres.forEach(
+                matiere => {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+                    option.value =
+                        matiere.id;
+
+
+                    option.textContent =
+                        matiere.nom;
+
+
+                    if (
+                        matiereSelectionnee &&
+                        String(matiere.id) ===
+                        String(matiereSelectionnee)
+                    ) {
+
+                        option.selected =
+                            true;
+
+                    }
+
+
+                    selectModificationMatiere.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+
+            selectModificationMatiere.disabled =
+                false;
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Erreur matières modification :",
+                error
+            );
+
+
+            selectModificationMatiere.innerHTML =
+                '<option value="">Erreur de chargement</option>';
+
+            selectModificationMatiere.disabled =
+                true;
+
+        }
+
+    }
+
+
+    // ==========================================
+    // AJOUTER UNE RESSOURCE
+    // ==========================================
+
+    document
+        .getElementById("ajoutForm")
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const fichier =
+                    document.getElementById(
+                        "fichier"
+                    ).files[0];
+
+
+                if (!fichier) {
+
+                    alert(
+                        "Veuillez sélectionner un PDF."
+                    );
+
+                    return;
+
+                }
+
+
+                const niveauId =
+                    document.getElementById(
+                        "niveau_id"
+                    ).value;
+
+
+                const semestreId =
+                    document.getElementById(
+                        "semestre_id"
+                    ).value;
+
+
+                const matiereId =
+                    document.getElementById(
+                        "matiere_id"
+                    ).value;
+
+
+                if (!niveauId) {
+
+                    alert(
+                        "Veuillez sélectionner un niveau."
+                    );
+
+                    return;
+
+                }
+
+
+                if (!semestreId) {
+
+                    alert(
+                        "Veuillez sélectionner un semestre."
+                    );
+
+                    return;
+
+                }
+
+
+                if (!matiereId) {
+
+                    alert(
+                        "Veuillez sélectionner une matière."
+                    );
+
+                    return;
+
+                }
+
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "titre",
+                    document.getElementById(
+                        "titre"
+                    ).value
+                );
+
+
+                formData.append(
+                    "description",
+                    document.getElementById(
+                        "description"
+                    ).value
+                );
+
+
+                formData.append(
+                    "type_ressource_id",
+                    document.getElementById(
+                        "type_ressource_id"
+                    ).value
+                );
+
+
+                formData.append(
+                    "annee_academique_id",
+                    document.getElementById(
+                        "annee_academique_id"
+                    ).value
+                );
+
+
+                formData.append(
+                    "niveau_id",
+                    niveauId
+                );
+
+
+                formData.append(
+                    "semestre_id",
+                    semestreId
+                );
+
+
+                formData.append(
+                    "matiere_id",
+                    matiereId
+                );
+
+
+                formData.append(
+                    "fichier",
+                    fichier
+                );
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `${API_URL}/ressources`,
+                            {
+                                method: "POST",
+
+                                headers: {
+
+                                    "Authorization":
+                                        "Bearer " + token
+
+                                },
+
+                                body: formData
+
+                            }
+                        );
+
+
+                    if (response.status === 401) {
+
+                        localStorage.removeItem(
+                            "access_token"
+                        );
+
+                        window.location.href =
+                            "connexion.html";
+
+                        return;
+
+                    }
+
+
+                    const resultat =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        alert(
+                            resultat.detail ||
+                            "Impossible d'ajouter la ressource."
+                        );
+
+                        return;
+
+                    }
+
+
+                    alert(
+                        "Ressource ajoutée avec succès."
+                    );
+
+
+                    document
+                        .getElementById(
+                            "ajoutForm"
+                        )
+                        .reset();
+
+
+                    // Réinitialiser le champ matière
+                    if (selectMatiere) {
+
+                        selectMatiere.innerHTML =
+                            '<option value="">Sélectionner d\'abord le niveau et le semestre</option>';
+
+                        selectMatiere.disabled =
+                            true;
+
+                    }
+
+
+                    await chargerRessources();
+
+                }
+
+                catch (error) {
+
+                    console.error(error);
+
+                    alert(
+                        "Erreur lors de l'ajout de la ressource."
+                    );
+
+                }
+
+            }
+        );
+
+
+    // ==========================================
+    // CHARGER LES RESSOURCES
+    // ==========================================
+
+    async function chargerRessources() {
+
+        const container =
+            document.getElementById(
+                "listeRessources"
+            );
+
+
+        if (!container) {
+            return;
+        }
+
+
+        container.innerHTML =
+            "Chargement des ressources...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/ressources`,
+                    {
+                        method: "GET",
+
+                        headers: {
+
+                            "Authorization":
+                                "Bearer " + token
+
+                        }
+
+                    }
+                );
+
+
+            if (response.status === 401) {
+
+                localStorage.removeItem(
+                    "access_token"
+                );
+
+                window.location.href =
+                    "connexion.html";
+
+                return;
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Impossible de charger les ressources."
+                );
+
+            }
+
+
+            ressources =
+                await response.json();
+
+
+            container.innerHTML =
+                "";
+
+
+            if (ressources.length === 0) {
+
+                container.textContent =
+                    "Aucune ressource enregistrée.";
+
+                return;
+
+            }
+
+
+            ressources.forEach(
+                ressource => {
+
+                    const div =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    div.className =
+                        "ressource";
+
+
+                    div.innerHTML = `
+
+                        <h3>
+                            ${echapperHTML(
+                                ressource.titre
+                            )}
+                        </h3>
+
+                        <p>
+                            <strong>ID :</strong>
+                            ${ressource.id}
+                        </p>
+
+                        <p>
+                            <strong>Description :</strong>
+                            ${
+                                ressource.description
+                                ? echapperHTML(
+                                    ressource.description
+                                )
+                                : "Aucune"
+                            }
+                        </p>
+
+                        <p>
+                            <strong>Fichier :</strong>
+                            ${
+                                echapperHTML(
+                                    ressource.fichier_nom ||
+                                    "PDF"
+                                )
+                            }
+                        </p>
+
+                        <p>
+                            <strong>Niveau :</strong>
+                            ${ressource.niveau_id}
+                        </p>
+
+                        <p>
+                            <strong>Semestre :</strong>
+                            ${ressource.semestre_id}
+                        </p>
+
+                        <p>
+                            <strong>Type :</strong>
+                            ${ressource.type_ressource_id}
+                        </p>
+
+                        <p>
+                            <strong>Matière :</strong>
+                            ${ressource.matiere_id}
+                        </p>
+
+                        <div class="ressource-actions">
+
+                            <button
+                                type="button"
+                                class="btn modifier"
+                                onclick="ouvrirModification(${ressource.id})">
+                                ✏️ Modifier
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn fichier"
+                                onclick="ouvrirRemplacement(${ressource.id})">
+                                🔄 Remplacer PDF
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn supprimer"
+                                onclick="supprimerRessource(${ressource.id})">
+                                🗑️ Supprimer
+                            </button>
+
+                        </div>
+
+                    `;
+
+
+                    container.appendChild(
+                        div
+                    );
+
+                }
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            container.innerHTML =
+                "Impossible de charger les ressources.";
+
+        }
+
+    }
+
+
+    // ==========================================
+    // OUVRIR MODIFICATION
+    // ==========================================
+
+    async function ouvrirModification(id) {
+
+        const ressource =
+            ressources.find(
+                r => r.id === id
+            );
+
+
+        if (!ressource) {
+
+            alert(
+                "Ressource introuvable."
+            );
+
+            return;
+
+        }
+
+
+        ressourceModificationId =
+            id;
+
+
+        document.getElementById(
+            "modificationTitre"
+        ).value =
+            ressource.titre || "";
+
+
+        document.getElementById(
+            "modificationDescription"
+        ).value =
+            ressource.description || "";
+
+
+        document.getElementById(
+            "modificationType"
+        ).value =
+            ressource.type_ressource_id;
+
+
+        document.getElementById(
+            "modificationAnnee"
+        ).value =
+            ressource.annee_academique_id;
+
+
+        document.getElementById(
+            "modificationNiveau"
+        ).value =
+            ressource.niveau_id;
+
+
+        document.getElementById(
+            "modificationSemestre"
+        ).value =
+            ressource.semestre_id;
+
+
+        // ======================================
+        // CHARGER LES MATIÈRES DU BON CONTEXTE
+        // ======================================
+
+        await chargerMatieresModification(
+            ressource.matiere_id
+        );
+
+
+        document.getElementById(
+            "modificationCard"
+        ).classList.remove(
+            "hidden"
+        );
+
+
+        window.scrollTo({
+
+            top:
+                document.getElementById(
+                    "modificationCard"
+                ).offsetTop - 20,
+
+            behavior: "smooth"
+
+        });
+
+    }
+
+
+    // ==========================================
+    // ENREGISTRER MODIFICATION
+    // ==========================================
+
+    document
+        .getElementById("modificationForm")
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                if (!ressourceModificationId) {
+
+                    alert(
+                        "Aucune ressource sélectionnée."
+                    );
+
+                    return;
+
+                }
+
+
+                const niveauId =
+                    document.getElementById(
+                        "modificationNiveau"
+                    ).value;
+
+
+                const semestreId =
+                    document.getElementById(
+                        "modificationSemestre"
+                    ).value;
+
+
+                const matiereId =
+                    document.getElementById(
+                        "modificationMatiere"
+                    ).value;
+
+
+                if (!niveauId) {
+
+                    alert(
+                        "Veuillez sélectionner un niveau."
+                    );
+
+                    return;
+
+                }
+
+
+                if (!semestreId) {
+
+                    alert(
+                        "Veuillez sélectionner un semestre."
+                    );
+
+                    return;
+
+                }
+
+
+                if (!matiereId) {
+
+                    alert(
+                        "Veuillez sélectionner une matière."
+                    );
+
+                    return;
+
+                }
+
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "titre",
+                    document.getElementById(
+                        "modificationTitre"
+                    ).value
+                );
+
+
+                formData.append(
+                    "description",
+                    document.getElementById(
+                        "modificationDescription"
+                    ).value
+                );
+
+
+                formData.append(
+                    "type_ressource_id",
+                    document.getElementById(
+                        "modificationType"
+                    ).value
+                );
+
+
+                formData.append(
+                    "annee_academique_id",
+                    document.getElementById(
+                        "modificationAnnee"
+                    ).value
+                );
+
+
+                formData.append(
+                    "niveau_id",
+                    niveauId
+                );
+
+
+                formData.append(
+                    "semestre_id",
+                    semestreId
+                );
+
+
+                formData.append(
+                    "matiere_id",
+                    matiereId
+                );
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `${API_URL}/admin/ressources/${ressourceModificationId}`,
+                            {
+                                method: "PUT",
+
+                                headers: {
+
+                                    "Authorization":
+                                        "Bearer " + token
+
+                                },
+
+                                body: formData
+
+                            }
+                        );
+
+
+                    if (response.status === 401) {
+
+                        localStorage.removeItem(
+                            "access_token"
+                        );
+
+                        window.location.href =
+                            "connexion.html";
+
+                        return;
+
+                    }
+
+
+                    const resultat =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        alert(
+                            resultat.detail ||
+                            "Impossible de modifier la ressource."
+                        );
+
+                        return;
+
+                    }
+
+
+                    alert(
+                        "Ressource modifiée avec succès."
+                    );
+
+
+                    fermerModification();
+
+
+                    try {
+
+                        await chargerRessources();
+
+                    }
+
+                    catch (error) {
+
+                        console.error(
+                            "Erreur de rafraîchissement :",
+                            error
+                        );
+
+                    }
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "Erreur modification :",
+                        error
+                    );
+
+                    alert(
+                        "Erreur lors de la modification."
+                    );
+
+                }
+
+            }
+        );
+
+
+    // ==========================================
+    // REMPLACER LE PDF
+    // ==========================================
+
+    function ouvrirRemplacement(id) {
+
+        const ressource =
+            ressources.find(
+                r => r.id === id
+            );
+
+
+        if (!ressource) {
+
+            alert(
+                "Ressource introuvable."
+            );
+
+            return;
+
+        }
+
+
+        ressourceFichierId =
+            id;
+
+
+        document.getElementById(
+            "fichierInfo"
+        ).textContent =
+            "Ressource : " +
+            ressource.titre;
+
+
+        document.getElementById(
+            "fichierCard"
+        ).classList.remove(
+            "hidden"
+        );
+
+
+        window.scrollTo({
+
+            top:
+                document.getElementById(
+                    "fichierCard"
+                ).offsetTop - 20,
+
+            behavior: "smooth"
+
+        });
+
+    }
+
+
+    // ==========================================
+    // ENVOYER NOUVEAU PDF
+    // ==========================================
+
+    async function remplacerFichier() {
+
+        const fichier =
+            document.getElementById(
+                "nouveauFichier"
+            ).files[0];
+
+
+        if (!fichier) {
+
+            alert(
+                "Veuillez sélectionner un PDF."
+            );
+
+            return;
+
+        }
+
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "fichier",
+            fichier
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/admin/ressources/${ressourceFichierId}/fichier`,
+                    {
+                        method: "PUT",
+
+                        headers: {
+
+                            "Authorization":
+                                "Bearer " + token
+
+                        },
+
+                        body: formData
+
+                    }
+                );
+
+
+            const resultat =
+                await response.json();
+
+
+            if (response.status === 401) {
+
+                localStorage.removeItem(
+                    "access_token"
+                );
+
+                window.location.href =
+                    "connexion.html";
+
+                return;
+
+            }
+
+
+            if (!response.ok) {
+
+                alert(
+                    resultat.detail ||
+                    "Impossible de remplacer le PDF."
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "PDF remplacé avec succès."
+            );
+
+
+            document.getElementById(
+                "nouveauFichier"
+            ).value =
+                "";
+
+
+            fermerFichier();
+
+
+            await chargerRessources();
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Erreur lors du remplacement du PDF."
+            );
+
+        }
+
+    }
+
+
+    // ==========================================
+    // SUPPRIMER UNE RESSOURCE
+    // ==========================================
+
+    async function supprimerRessource(id) {
+
+        const ressource =
+            ressources.find(
+                r => r.id === id
+            );
+
+
+        if (!ressource) {
+
+            alert(
+                "Ressource introuvable."
+            );
+
+            return;
+
+        }
+
+
+        const confirmation =
+            confirm(
+                `Voulez-vous vraiment supprimer la ressource "${ressource.titre}" ?`
+            );
+
+
+        if (!confirmation) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/ressources/${id}`,
+                    {
+                        method: "DELETE",
+
+                        headers: {
+
+                            "Authorization":
+                                "Bearer " + token
+
+                        }
+
+                    }
+                );
+
+
+            const resultat =
+                await response.json();
+
+
+            if (response.status === 401) {
+
+                localStorage.removeItem(
+                    "access_token"
+                );
+
+                window.location.href =
+                    "connexion.html";
+
+                return;
+
+            }
+
+
+            if (response.status === 403) {
+
+                alert(
+                    "Accès réservé aux administrateurs."
+                );
+
+                return;
+
+            }
+
+
+            if (!response.ok) {
+
+                alert(
+                    resultat.detail ||
+                    "Impossible de supprimer la ressource."
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Ressource supprimée avec succès."
+            );
+
+
+            await chargerRessources();
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Erreur lors de la suppression."
+            );
+
+        }
+
+    }
+
+
+    // ==========================================
+    // FERMER MODIFICATION
+    // ==========================================
+
+    function fermerModification() {
+
+        const card =
+            document.getElementById(
+                "modificationCard"
+            );
+
+
+        if (card) {
+
+            card.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        ressourceModificationId =
+            null;
+
+    }
+
+
+    // ==========================================
+    // FERMER REMPLACEMENT
+    // ==========================================
+
+    function fermerFichier() {
+
+        const card =
+            document.getElementById(
+                "fichierCard"
+            );
+
+
+        if (card) {
+
+            card.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        ressourceFichierId =
+            null;
+
+    }
+
+
+    // ==========================================
+    // MESSAGE
+    // ==========================================
+
+    function afficherMessage(
+        texte,
+        erreur = false
+    ) {
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+        if (!message) {
+
+            return;
+
+        }
+
+
+        message.textContent =
+            texte;
+
+
+        message.style.color =
+            erreur
+            ? "red"
+            : "";
+
+    }
+
+
+    // ==========================================
+    // SÉCURITÉ HTML
+    // ==========================================
+
+    function echapperHTML(texte) {
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.textContent =
+            texte ?? "";
+
+
+        return div.innerHTML;
+
+    }
+
+    </script>
+</body>
+</html>

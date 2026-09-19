@@ -1,0 +1,574 @@
+/* =========================================
+   RÉINITIALISATION
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #eef8ff;
+    color: #073b80;
+}
+
+
+/* =========================================
+   EN-TÊTE
+========================================= */
+
+.hero {
+    height: 205px;
+    background: linear-gradient(
+        135deg,
+        #0869d9,
+        #0752b8
+    );
+
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+}
+
+
+/* Contenu de l'en-tête */
+
+.hero-content {
+    text-align: center;
+    position: relative;
+    z-index: 5;
+}
+
+
+/* Titre */
+
+.hero h1 {
+    font-size: 58px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.hero h1 span {
+    color: #ffc400;
+}
+
+
+/* Sous-titre */
+
+.hero p {
+    font-size: 20px;
+    font-weight: 400;
+    color: #ffffff;
+}
+
+
+/* Petit trait jaune */
+
+.yellow-line {
+    width: 76px;
+    height: 5px;
+
+    background-color: #ffc400;
+
+    border-radius: 5px;
+
+    margin: 17px auto 0;
+}
+
+
+/* =========================================
+   DÉCORATIONS DE L'EN-TÊTE
+========================================= */
+
+.books-decoration {
+    position: absolute;
+    left: -40px;
+    top: 25px;
+
+    width: 190px;
+
+    transform: rotate(-8deg);
+
+    opacity: 0.15;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.books-decoration i {
+    font-size: 72px;
+    margin-bottom: -45px;
+    color: #dcecff;
+}
+
+
+.hat-decoration {
+    position: absolute;
+    right: 35px;
+    top: -25px;
+
+    opacity: 0.15;
+
+    transform: rotate(-8deg);
+}
+
+.hat-decoration i {
+    font-size: 190px;
+    color: #002f75;
+}
+
+
+/* =========================================
+   CONTENU PRINCIPAL
+========================================= */
+
+.main-content {
+    min-height: 380px;
+
+    padding: 25px 40px 35px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* Conteneur des cartes */
+
+.cards-container {
+    width: 100%;
+    max-width: 830px;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 35px;
+}
+
+
+/* =========================================
+   CARTES
+========================================= */
+
+.year-card {
+    background: #ffffff;
+
+    min-height: 320px;
+
+    border-radius: 20px;
+
+    padding: 20px 25px;
+
+    text-align: center;
+
+    box-shadow: 0 8px 25px rgba(0, 83, 170, 0.12);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    transition: 0.3s ease;
+}
+
+
+/* Animation au survol */
+
+.year-card:hover {
+    transform: translateY(-6px);
+
+    box-shadow: 0 14px 30px rgba(0, 83, 170, 0.18);
+}
+
+
+/* =========================================
+   ICÔNE DES CARTES
+========================================= */
+
+.icon-box {
+    width: 120px;
+    height: 120px;
+
+    border-radius: 22px;
+
+    background: linear-gradient(
+        145deg,
+        #0c91ed,
+        #0754bd
+    );
+
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-bottom: 12px;
+
+    box-shadow:
+        inset 0 0 20px rgba(255, 255, 255, 0.15);
+}
+
+
+/* Livre */
+
+.icon-box .fa-book-open-reader {
+    font-size: 61px;
+    color: white;
+}
+
+
+/* Chapeau */
+
+.icon-box .cap {
+    position: absolute;
+
+    right: 8px;
+    top: 8px;
+
+    font-size: 48px;
+
+    color: #002f75;
+
+    transform: rotate(-5deg);
+}
+
+
+/* Jaune sur le chapeau */
+
+.icon-box .cap::after {
+    content: "";
+}
+
+
+/* =========================================
+   TITRE DES CARTES
+========================================= */
+
+.year-card h2 {
+    font-size: 30px;
+
+    color: #063b83;
+
+    font-weight: 800;
+
+    margin-top: 0;
+}
+
+
+/* Trait sous le titre */
+
+.card-line {
+    width: 55px;
+    height: 4px;
+
+    background: #ffc400;
+
+    border-radius: 5px;
+
+    margin: 7px auto 9px;
+}
+
+
+/* Texte */
+
+.year-card p {
+    font-size: 15px;
+
+    line-height: 1.5;
+
+    color: #7890aa;
+
+    margin-bottom: 12px;
+}
+
+
+/* =========================================
+   BOUTONS
+========================================= */
+
+.btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    width: 177px;
+    height: 40px;
+
+    background: #0874e8;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    border-radius: 10px;
+
+    transition: 0.3s ease;
+
+    margin-top: auto;
+}
+
+
+.btn:hover {
+    background: #0057c7;
+
+    transform: scale(1.03);
+}
+
+
+.btn i {
+    font-size: 13px;
+
+    transition: 0.3s ease;
+}
+
+
+.btn:hover i {
+    transform: translateX(4px);
+}
+
+
+/* =========================================
+   PIED DE PAGE
+========================================= */
+
+.footer {
+    min-height: 72px;
+
+    background: #063986;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-around;
+
+    padding: 8px 45px;
+
+    color: white;
+}
+
+
+/* Élément du footer */
+
+.footer-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    width: 30%;
+}
+
+
+/* Icônes */
+
+.footer-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-icon i {
+    font-size: 31px;
+
+    color: #ffc400;
+}
+
+
+/* Titres */
+
+.footer-item h3 {
+    font-size: 15px;
+
+    margin-bottom: 4px;
+
+    font-weight: 700;
+}
+
+
+/* Textes */
+
+.footer-item p {
+    font-size: 12px;
+
+    color: #d5e3f5;
+}
+
+
+/* Séparateurs */
+
+.separator {
+    height: 48px;
+
+    width: 1px;
+
+    background: rgba(255, 255, 255, 0.2);
+}
+
+
+/* =========================================
+   RESPONSIVE : TABLETTE
+========================================= */
+
+@media (max-width: 800px) {
+
+    .hero {
+        height: 190px;
+    }
+
+    .hero h1 {
+        font-size: 45px;
+    }
+
+    .hero p {
+        font-size: 17px;
+    }
+
+    .cards-container {
+        max-width: 700px;
+
+        gap: 20px;
+    }
+
+    .year-card {
+        padding: 18px;
+    }
+
+    .footer {
+        padding: 10px 20px;
+    }
+
+    .footer-item {
+        gap: 8px;
+    }
+}
+
+
+/* =========================================
+   RESPONSIVE : TÉLÉPHONE
+========================================= */
+
+@media (max-width: 600px) {
+
+    /* En-tête */
+
+    .hero {
+        height: 180px;
+
+        padding: 20px;
+    }
+
+    .hero h1 {
+        font-size: 36px;
+    }
+
+    .hero p {
+        font-size: 15px;
+
+        line-height: 1.4;
+    }
+
+    .books-decoration {
+        left: -70px;
+    }
+
+    .hat-decoration {
+        right: -70px;
+    }
+
+
+    /* Contenu */
+
+    .main-content {
+        padding: 25px 20px;
+    }
+
+    .cards-container {
+        grid-template-columns: 1fr;
+
+        max-width: 400px;
+    }
+
+
+    /* Cartes */
+
+    .year-card {
+        min-height: 315px;
+    }
+
+
+    /* Footer */
+
+    .footer {
+        flex-direction: column;
+
+        gap: 15px;
+
+        padding: 20px;
+    }
+
+    .footer-item {
+        width: 100%;
+
+        justify-content: flex-start;
+
+        max-width: 300px;
+    }
+
+    .separator {
+        display: none;
+    }
+}
+
+
+/* =========================================
+   PETITS TÉLÉPHONES
+========================================= */
+
+@media (max-width: 380px) {
+
+    .hero h1 {
+        font-size: 30px;
+    }
+
+    .hero p {
+        font-size: 14px;
+    }
+
+    .icon-box {
+        width: 105px;
+        height: 105px;
+    }
+
+    .icon-box .fa-book-open-reader {
+        font-size: 52px;
+    }
+
+    .icon-box .cap {
+        font-size: 40px;
+    }
+
+    .year-card h2 {
+        font-size: 26px;
+    }
+}

@@ -1,0 +1,609 @@
+/* =========================================
+   RÉINITIALISATION
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+
+    background: #eef8ff;
+
+    color: #073b80;
+}
+
+
+/* =========================================
+   EN-TÊTE
+========================================= */
+
+.hero {
+
+    height: 205px;
+
+    background: linear-gradient(
+        135deg,
+        #0869d9,
+        #0752b8
+    );
+
+    position: relative;
+
+    overflow: hidden;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: white;
+}
+
+
+/* Contenu */
+
+.hero-content {
+
+    text-align: center;
+
+    position: relative;
+
+    z-index: 5;
+}
+
+
+/* Titre */
+
+.hero h1 {
+
+    font-size: 48px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 10px;
+}
+
+
+.hero h1 span {
+
+    color: #ffc400;
+}
+
+
+/* Sous-titre */
+
+.hero p {
+
+    font-size: 19px;
+
+    color: white;
+}
+
+
+/* Trait jaune */
+
+.yellow-line {
+
+    width: 76px;
+
+    height: 5px;
+
+    background-color: #ffc400;
+
+    border-radius: 5px;
+
+    margin: 17px auto 0;
+}
+
+
+/* =========================================
+   DÉCORATION LIVRES
+========================================= */
+
+.books-decoration {
+
+    position: absolute;
+
+    left: -40px;
+
+    top: 25px;
+
+    width: 190px;
+
+    transform: rotate(-8deg);
+
+    opacity: 0.15;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+.books-decoration i {
+
+    font-size: 72px;
+
+    margin-bottom: -45px;
+
+    color: #dcecff;
+}
+
+
+/* =========================================
+   DÉCORATION CHAPEAU
+========================================= */
+
+.hat-decoration {
+
+    position: absolute;
+
+    right: 35px;
+
+    top: -25px;
+
+    opacity: 0.15;
+
+    transform: rotate(-8deg);
+}
+
+
+.hat-decoration i {
+
+    font-size: 190px;
+
+    color: #002f75;
+}
+
+
+/* =========================================
+   CONTENU PRINCIPAL
+========================================= */
+
+.main-content {
+
+    min-height: 380px;
+
+    padding: 35px 40px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+
+/* Conteneur */
+
+.cards-container {
+
+    width: 100%;
+
+    max-width: 830px;
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 35px;
+}
+
+
+/* =========================================
+   CARTES SEMESTRE
+========================================= */
+
+.semester-card {
+
+    background: white;
+
+    min-height: 310px;
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    text-align: center;
+
+    box-shadow: 0 8px 25px rgba(0, 83, 170, 0.12);
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    transition: 0.3s ease;
+}
+
+
+/* Effet au survol */
+
+.semester-card:hover {
+
+    transform: translateY(-7px);
+
+    box-shadow:
+        0 14px 30px rgba(0, 83, 170, 0.18);
+}
+
+
+/* =========================================
+   ICÔNE
+========================================= */
+
+.icon-box {
+
+    width: 115px;
+
+    height: 115px;
+
+    border-radius: 22px;
+
+    background: linear-gradient(
+        145deg,
+        #0c91ed,
+        #0754bd
+    );
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    margin-bottom: 15px;
+}
+
+
+.icon-box i {
+
+    font-size: 58px;
+
+    color: white;
+}
+
+
+/* =========================================
+   TITRE
+========================================= */
+
+.semester-card h2 {
+
+    font-size: 30px;
+
+    color: #063b83;
+
+    font-weight: 800;
+}
+
+
+/* Trait */
+
+.card-line {
+
+    width: 55px;
+
+    height: 4px;
+
+    background: #ffc400;
+
+    border-radius: 5px;
+
+    margin: 8px auto 10px;
+}
+
+
+/* Texte */
+
+.semester-card p {
+
+    font-size: 15px;
+
+    line-height: 1.5;
+
+    color: #7890aa;
+
+    margin-bottom: 15px;
+}
+
+
+/* =========================================
+   BOUTON
+========================================= */
+
+.btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    width: 180px;
+
+    height: 42px;
+
+    background: #0874e8;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    border-radius: 10px;
+
+    transition: 0.3s ease;
+
+    margin-top: auto;
+}
+
+
+.btn:hover {
+
+    background: #0057c7;
+
+    transform: scale(1.03);
+}
+
+
+.btn i {
+
+    font-size: 13px;
+
+    transition: 0.3s ease;
+}
+
+
+.btn:hover i {
+
+    transform: translateX(4px);
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.footer {
+
+    min-height: 72px;
+
+    background: #063986;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-around;
+
+    padding: 8px 45px;
+
+    color: white;
+}
+
+
+/* Élément */
+
+.footer-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    width: 30%;
+}
+
+
+/* Icône */
+
+.footer-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.footer-icon i {
+
+    font-size: 31px;
+
+    color: #ffc400;
+}
+
+
+/* Titre */
+
+.footer-item h3 {
+
+    font-size: 15px;
+
+    margin-bottom: 4px;
+}
+
+
+/* Texte */
+
+.footer-item p {
+
+    font-size: 12px;
+
+    color: #d5e3f5;
+}
+
+
+/* Séparateur */
+
+.separator {
+
+    height: 48px;
+
+    width: 1px;
+
+    background: rgba(255, 255, 255, 0.2);
+}
+
+
+/* =========================================
+   TABLETTE
+========================================= */
+
+@media (max-width: 800px) {
+
+    .hero h1 {
+
+        font-size: 40px;
+    }
+
+
+    .hero p {
+
+        font-size: 16px;
+    }
+
+
+    .cards-container {
+
+        gap: 20px;
+    }
+
+
+    .footer {
+
+        padding: 10px 20px;
+    }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    .hero {
+
+        height: 190px;
+
+        padding: 20px;
+    }
+
+
+    .hero h1 {
+
+        font-size: 31px;
+
+        line-height: 1.2;
+    }
+
+
+    .hero p {
+
+        font-size: 14px;
+
+        line-height: 1.4;
+    }
+
+
+    .cards-container {
+
+        grid-template-columns: 1fr;
+
+        max-width: 400px;
+    }
+
+
+    .main-content {
+
+        padding: 25px 20px;
+    }
+
+
+    .footer {
+
+        flex-direction: column;
+
+        gap: 15px;
+
+        padding: 20px;
+    }
+
+
+    .footer-item {
+
+        width: 100%;
+
+        max-width: 300px;
+    }
+
+
+    .separator {
+
+        display: none;
+    }
+
+}
+
+
+/* =========================================
+   PETITS TÉLÉPHONES
+========================================= */
+
+@media (max-width: 380px) {
+
+    .hero h1 {
+
+        font-size: 27px;
+    }
+
+
+    .hero p {
+
+        font-size: 13px;
+    }
+
+
+    .icon-box {
+
+        width: 100px;
+
+        height: 100px;
+    }
+
+
+    .icon-box i {
+
+        font-size: 50px;
+    }
+
+
+    .semester-card h2 {
+
+        font-size: 26px;
+    }
+
+}

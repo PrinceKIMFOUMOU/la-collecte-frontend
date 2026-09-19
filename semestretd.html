@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Choix du semestre - Educoncours</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="semestretd.css">
+</head>
+
+<body>
+
+    <header class="hero">
+
+        <div class="books-decoration">
+            <i class="fa-solid fa-book"></i>
+            <i class="fa-solid fa-book"></i>
+            <i class="fa-solid fa-book"></i>
+        </div>
+
+        <div class="hat-decoration">
+            <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+
+        <div class="hero-content">
+
+            <h1>
+                CHOISISSEZ VOTRE <span>SEMESTRE</span>
+            </h1>
+
+            <p>
+                Sélectionnez le semestre pour accéder aux travaux dirigés
+            </p>
+
+            <div class="yellow-line"></div>
+
+        </div>
+
+    </header>
+
+
+    <main class="main-content">
+
+        <div class="cards-container">
+
+            <!-- SEMESTRE 1 -->
+
+            <div class="semester-card">
+
+                <div class="icon-box">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+
+                <h2>
+                    Semestre 1
+                </h2>
+
+                <div class="card-line"></div>
+
+                <p>
+                    Accédez aux travaux dirigés
+                    <br>
+                    du premier semestre
+                </p>
+
+                <a href="#" class="btn" id="semestre1">
+
+                    Voir les sujets
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+
+            <!-- SEMESTRE 2 -->
+
+            <div class="semester-card">
+
+                <div class="icon-box">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+
+                <h2>
+                    Semestre 2
+                </h2>
+
+                <div class="card-line"></div>
+
+                <p>
+                    Accédez aux travaux dirigés
+                    <br>
+                    du deuxième semestre
+                </p>
+
+                <a href="#" class="btn" id="semestre2">
+
+                    Voir les sujets
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <footer class="footer">
+
+        <div class="footer-item">
+
+            <div class="footer-icon">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+
+            <div>
+
+                <h3>Educoncours</h3>
+
+                <p>Votre réussite, notre priorité</p>
+
+            </div>
+
+        </div>
+
+
+        <div class="separator"></div>
+
+
+        <div class="footer-item">
+
+            <div class="footer-icon">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+
+            <div>
+
+                <h3>Sujets à jour</h3>
+
+                <p>Actualisés régulièrement</p>
+
+            </div>
+
+        </div>
+
+
+        <div class="separator"></div>
+
+
+        <div class="footer-item">
+
+            <div class="footer-icon">
+                <i class="fa-solid fa-headset"></i>
+            </div>
+
+            <div>
+
+                <h3>Besoin d'aide ?</h3>
+
+                <p>Contactez-nous</p>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <script>
+
+        const params = new URLSearchParams(window.location.search);
+
+        const token = localStorage.getItem("access_token");
+
+        if (!token) {
+
+            localStorage.setItem(
+                "page_apres_connexion",
+                window.location.href
+            );
+            window.location.href = "connexion.html";
+        } else {
+
+            const niveauId = params.get("niveau_id");
+
+            if (!niveauId) {
+                alert("Niveau non spécifié.");
+                window.location.href = "TD.html";
+            }
+
+            document.getElementById("semestre1").href =
+                `matieres.html?niveau_id=${niveauId}&semestre_id=1&type_ressource_id=1`;
+
+            document.getElementById("semestre2").href =
+                `matieres.html?niveau_id=${niveauId}&semestre_id=2&type_ressource_id=1`;
+        }
+
+    </script>
+
+</body>
+</html>

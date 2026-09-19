@@ -1,0 +1,232 @@
+```css
+/* ==============================
+   RÉINITIALISATION
+================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* ==============================
+   CORPS DE LA PAGE
+================================= */
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f2f5f9;
+
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 30px;
+}
+
+
+/* ==============================
+   CONTENEUR
+================================= */
+
+.container {
+    width: 100%;
+    max-width: 550px;
+}
+
+
+/* ==============================
+   FORMULAIRE
+================================= */
+
+.formulaire {
+    background: white;
+
+    padding: 40px;
+
+    border-radius: 15px;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
+}
+
+
+/* ==============================
+   TITRE
+================================= */
+
+h1 {
+    text-align: center;
+
+    color: #1e3a8a;
+
+    font-size: 30px;
+
+    margin-bottom: 10px;
+}
+
+
+.description {
+    text-align: center;
+
+    color: #666;
+
+    font-size: 15px;
+
+    margin-bottom: 30px;
+}
+
+
+/* ==============================
+   CHAMPS
+================================= */
+
+.champ {
+    margin-bottom: 20px;
+}
+
+
+.champ label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #333;
+
+    font-weight: bold;
+
+    font-size: 15px;
+}
+
+
+/* ==============================
+   INPUTS ET SELECT
+================================= */
+
+.champ input,
+.champ select {
+    width: 100%;
+
+    padding: 13px 15px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+
+    outline: none;
+
+    background: #fff;
+
+    transition: 0.3s;
+}
+
+
+/* Effet lorsqu'on clique dans un champ */
+
+.champ input:focus,
+.champ select:focus {
+    border-color: #2563eb;
+
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+
+/* Placeholder */
+
+.champ input::placeholder {
+    color: #999;
+}
+
+
+/* ==============================
+   BOUTONS
+================================= */
+
+.boutons {
+    display: flex;
+
+    gap: 12px;
+
+    margin-top: 30px;
+}
+
+
+.boutons button {
+    flex: 1;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+
+/* Bouton inscription */
+
+.btn-inscription {
+    background: #2563eb;
+
+    color: white;
+}
+
+
+.btn-inscription:hover {
+    background: #1d4ed8;
+
+    transform: translateY(-2px);
+}
+
+
+/* Bouton réinitialiser */
+
+.btn-reset {
+    background: #e5e7eb;
+
+    color: #333;
+}
+
+
+.btn-reset:hover {
+    background: #d1d5db;
+
+    transform: translateY(-2px);
+}
+
+
+/* ==============================
+   RESPONSIVE
+================================= */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 15px;
+    }
+
+    .formulaire {
+        padding: 25px;
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+
+    .boutons {
+        flex-direction: column;
+    }
+
+}
+```

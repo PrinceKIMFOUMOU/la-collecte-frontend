@@ -1,0 +1,822 @@
+<!DOCTYPE html><html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Gestion des matières - La Collecte</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        background: #f5f7fb;
+        color: #222;
+    }
+
+    header {
+        background: #0057b8;
+        color: white;
+        padding: 25px;
+        text-align: center;
+    }
+
+    .container {
+        width: 92%;
+        max-width: 900px;
+        margin: 35px auto;
+    }
+
+    .card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+    }
+
+    h2 {
+        color: #0057b8;
+        margin-bottom: 20px;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        background: white;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    button {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .btn {
+        background: #f4c400;
+        color: #111;
+    }
+
+    .modifier {
+        background: #0057b8;
+        color: white;
+        margin-right: 5px;
+    }
+
+    .supprimer {
+        background: #dc3545;
+        color: white;
+    }
+
+    .matiere {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .matiere:last-child {
+        border-bottom: none;
+    }
+
+    .matiere-info {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .matiere-info strong {
+        font-size: 17px;
+    }
+
+    .contexte {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .actions {
+        white-space: nowrap;
+    }
+
+    #message {
+        margin: 15px 0;
+        font-weight: bold;
+    }
+
+    .retour {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #0057b8;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+        .matiere {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .actions {
+            white-space: normal;
+        }
+    }
+</style>
+
+</head><body><header>
+    <h1>La Collecte</h1>
+    <p>Gestion des matières</p>
+</header><div class="container"><a href="admin.html" class="retour">← Retour administration</a>
+
+<div class="card">
+
+    <h2>Ajouter une matière</h2>
+
+    <div>
+        <label for="nomMatiere">Nom de la matière</label>
+        <input
+            type="text"
+            id="nomMatiere"
+            placeholder="Exemple : Mathématiques"
+            required
+        >
+    </div>
+
+    <div>
+        <label for="niveau_id">Niveau</label>
+        <select id="niveau_id" required>
+            <option value="">Sélectionner un niveau</option>
+            <option value="1">1ère année</option>
+            <option value="2">2e année</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="semestre_id">Semestre</label>
+        <select id="semestre_id" required>
+            <option value="">Sélectionner un semestre</option>
+            <option value="1">Semestre 1</option>
+            <option value="2">Semestre 2</option>
+        </select>
+    </div>
+
+    <button class="btn" onclick="ajouterMatiere()">
+        Ajouter
+    </button>
+
+</div>
+
+<div class="card">
+
+    <h2>Liste des matières</h2>
+
+    <div id="message">Chargement...</div>
+
+    <div id="listeMatieres"></div>
+
+</div>
+
+</div><script>
+
+const API_URL = "https://la_collecte-backend.onrender.com";
+
+const token = localStorage.getItem("access_token");
+
+const message = document.getElementById("message");
+const liste = document.getElementById("listeMatieres");
+
+if (!token) {
+
+    localStorage.setItem(
+        "page_apres_connexion",
+        window.location.href
+    );
+
+    window.location.href = "connexion.html";
+
+} else {
+
+    chargerMatieres();
+
+}
+
+
+/* ================================
+   CHARGER LES MATIÈRES
+================================ */
+
+async function chargerMatieres() {
+
+    message.textContent = "Chargement...";
+    liste.innerHTML = "";
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/matieres`,
+            {
+                method: "GET",
+
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }
+        );
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem("access_token");
+
+            localStorage.setItem(
+                "page_apres_connexion",
+                window.location.href
+            );
+
+            window.location.href = "connexion.html";
+
+            return;
+        }
+
+
+        if (response.status === 403) {
+
+            message.textContent =
+                "Accès réservé aux administrateurs.";
+
+            return;
+        }
+
+
+        if (!response.ok) {
+
+            const erreur = await response.json().catch(() => ({}));
+
+            throw new Error(
+                erreur.detail ||
+                "Impossible de charger les matières."
+            );
+        }
+
+
+        const matieres = await response.json();
+
+
+        if (!Array.isArray(matieres) || matieres.length === 0) {
+
+            message.textContent =
+                "Aucune matière enregistrée.";
+
+            return;
+        }
+
+
+        message.textContent = "";
+
+
+        matieres.forEach(matiere => {
+
+            const div = document.createElement("div");
+
+            div.className = "matiere";
+
+
+            const nom = echapperHTML(matiere.nom);
+
+            const niveau = obtenirNomNiveau(
+                matiere.niveau_id
+            );
+
+            const semestre = obtenirNomSemestre(
+                matiere.semestre_id
+            );
+
+
+            div.innerHTML = `
+
+                <div class="matiere-info">
+
+                    <strong>${nom}</strong>
+
+                    <span class="contexte">
+                        ${niveau} — ${semestre}
+                    </span>
+
+                </div>
+
+
+                <div class="actions">
+
+                    <button
+                        class="modifier"
+                        onclick="modifierMatiere(
+                            ${matiere.id},
+                            '${echapperJS(matiere.nom)}',
+                            ${matiere.niveau_id},
+                            ${matiere.semestre_id}
+                        )"
+                    >
+                        Modifier
+                    </button>
+
+
+                    <button
+                        class="supprimer"
+                        onclick="supprimerMatiere(${matiere.id})"
+                    >
+                        Supprimer
+                    </button>
+
+                </div>
+
+            `;
+
+
+            liste.appendChild(div);
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Erreur chargement matières :",
+            error
+        );
+
+        message.textContent =
+            error.message ||
+            "Impossible de charger les matières.";
+
+    }
+
+}
+
+
+/* ================================
+   AJOUTER UNE MATIÈRE
+================================ */
+
+async function ajouterMatiere() {
+
+    const input =
+        document.getElementById("nomMatiere");
+
+    const niveauSelect =
+        document.getElementById("niveau_id");
+
+    const semestreSelect =
+        document.getElementById("semestre_id");
+
+
+    const nom = input.value.trim();
+
+    const niveauId =
+        niveauSelect.value;
+
+    const semestreId =
+        semestreSelect.value;
+
+
+    if (!nom) {
+
+        alert(
+            "Veuillez saisir le nom de la matière."
+        );
+
+        input.focus();
+
+        return;
+    }
+
+
+    if (!niveauId) {
+
+        alert(
+            "Veuillez sélectionner un niveau."
+        );
+
+        niveauSelect.focus();
+
+        return;
+    }
+
+
+    if (!semestreId) {
+
+        alert(
+            "Veuillez sélectionner un semestre."
+        );
+
+        semestreSelect.focus();
+
+        return;
+    }
+
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/admin/matieres`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+
+                body: JSON.stringify({
+
+                    nom: nom,
+
+                    niveau_id:
+                        parseInt(niveauId),
+
+                    semestre_id:
+                        parseInt(semestreId)
+
+                })
+            }
+        );
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "connexion.html";
+
+            return;
+        }
+
+
+        if (response.status === 403) {
+
+            alert(
+                "Accès réservé aux administrateurs."
+            );
+
+            return;
+        }
+
+
+        const resultat =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                resultat.detail ||
+                "Impossible d'ajouter la matière."
+            );
+
+            return;
+        }
+
+
+        input.value = "";
+
+        niveauSelect.value = "";
+
+        semestreSelect.value = "";
+
+
+        await chargerMatieres();
+
+
+        alert(
+            "Matière ajoutée avec succès."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Erreur ajout matière :",
+            error
+        );
+
+        alert(
+            "Erreur lors de l'ajout."
+        );
+
+    }
+
+}
+
+
+/* ================================
+   MODIFIER UNE MATIÈRE
+================================ */
+
+async function modifierMatiere(
+    id,
+    ancienNom,
+    ancienNiveauId,
+    ancienSemestreId
+) {
+
+    const nouveauNom =
+        prompt(
+            "Nouveau nom de la matière :",
+            ancienNom
+        );
+
+
+    if (nouveauNom === null) {
+
+        return;
+    }
+
+
+    const nom =
+        nouveauNom.trim();
+
+
+    if (!nom) {
+
+        alert(
+            "Le nom ne peut pas être vide."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/admin/matieres/${id}`,
+            {
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+
+                body: JSON.stringify({
+
+                    nom: nom,
+
+                    niveau_id:
+                        parseInt(ancienNiveauId),
+
+                    semestre_id:
+                        parseInt(ancienSemestreId)
+
+                })
+            }
+        );
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "connexion.html";
+
+            return;
+        }
+
+
+        if (response.status === 403) {
+
+            alert(
+                "Accès réservé aux administrateurs."
+            );
+
+            return;
+        }
+
+
+        const resultat =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                resultat.detail ||
+                "Impossible de modifier la matière."
+            );
+
+            return;
+        }
+
+
+        await chargerMatieres();
+
+
+        alert(
+            "Matière modifiée avec succès."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Erreur modification matière :",
+            error
+        );
+
+        alert(
+            "Erreur lors de la modification."
+        );
+
+    }
+
+}
+
+
+/* ================================
+   SUPPRIMER UNE MATIÈRE
+================================ */
+
+async function supprimerMatiere(id) {
+
+    const confirmation =
+        confirm(
+            "Voulez-vous vraiment supprimer cette matière ?"
+        );
+
+
+    if (!confirmation) {
+
+        return;
+    }
+
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/admin/matieres/${id}`,
+            {
+                method: "DELETE",
+
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }
+        );
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "connexion.html";
+
+            return;
+        }
+
+
+        if (response.status === 403) {
+
+            alert(
+                "Accès réservé aux administrateurs."
+            );
+
+            return;
+        }
+
+
+        const resultat =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                resultat.detail ||
+                "Impossible de supprimer la matière."
+            );
+
+            return;
+        }
+
+
+        await chargerMatieres();
+
+
+        alert(
+            "Matière supprimée avec succès."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Erreur suppression matière :",
+            error
+        );
+
+        alert(
+            "Erreur lors de la suppression."
+        );
+
+    }
+
+}
+
+
+/* ================================
+   NOMS DES NIVEAUX
+================================ */
+
+function obtenirNomNiveau(niveauId) {
+
+    if (niveauId === 1) {
+
+        return "1ère année";
+    }
+
+    if (niveauId === 2) {
+
+        return "2e année";
+    }
+
+    return "Niveau inconnu";
+}
+
+
+/* ================================
+   NOMS DES SEMESTRES
+================================ */
+
+function obtenirNomSemestre(semestreId) {
+
+    if (semestreId === 1) {
+
+        return "Semestre 1";
+    }
+
+    if (semestreId === 2) {
+
+        return "Semestre 2";
+    }
+
+    return "Semestre inconnu";
+}
+
+
+/* ================================
+   PROTECTION HTML
+================================ */
+
+function echapperHTML(texte) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        texte ?? "";
+
+    return div.innerHTML;
+}
+
+
+/* ================================
+   PROTECTION JAVASCRIPT
+================================ */
+
+function echapperJS(texte) {
+
+    return String(texte ?? "")
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'")
+        .replace(/"/g, '\\"')
+        .replace(/\r/g, "\\r")
+        .replace(/\n/g, "\\n");
+
+}
+
+</script></body>
+</html>
