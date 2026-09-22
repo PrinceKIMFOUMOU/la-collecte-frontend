@@ -478,6 +478,13 @@ async function chargerRessources() {
 
 async function ouvrirPDF(ressourceId) {
 
+    const nouvelleFenetre = window.open("", "_blank");
+
+    if (!nouvelleFenetre) {
+        alert("Le navigateur a bloqué l'ouverture du PDF.");
+        return;
+    }
+
     const token =
         localStorage.getItem("access_token");
 
