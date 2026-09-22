@@ -589,13 +589,15 @@ async function ouvrirPDF(ressourceId) {
         const url =
             window.URL.createObjectURL(blob);
 
-
+ /*==========================       
         const nouvelleFenetre =
             window.open(
                 url,
                 "_blank"
             );
+==========================*/
 
+        nouvelleFenetre.location.href = url;
 
         if (!nouvelleFenetre) {
 
