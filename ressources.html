@@ -480,6 +480,7 @@ async function ouvrirPDF(ressourceId) {
 
     const nouvelleFenetre = window.open("", "_blank");
 
+
     if (!nouvelleFenetre) {
         alert("Le navigateur a bloqué l'ouverture du PDF.");
         return;
@@ -598,7 +599,7 @@ async function ouvrirPDF(ressourceId) {
 ==========================*/
 
         nouvelleFenetre.location.href = url;
-
+/*============================
         if (!nouvelleFenetre) {
 
             alert(
@@ -606,7 +607,7 @@ async function ouvrirPDF(ressourceId) {
             );
 
         }
-
+=============================*/
 
         /*
          * Libération de l'URL temporaire
