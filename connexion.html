@@ -54,13 +54,26 @@
                         Mot de passe
                     </label>
 
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Entrez votre mot de passe"
-                        required
-                    >
+                    <div class="password-container">
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Entrez votre mot de passe"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            id="togglePassword"
+                            aria-label="Afficher le mot de passe"
+                        >
+                            👁️
+                        </button>
+
+                    </div>
 
                 </div>
 
@@ -112,6 +125,54 @@
         const message =
             document.getElementById("message");
 
+        const passwordInput =
+            document.getElementById("password");
+
+        const togglePassword =
+            document.getElementById("togglePassword");
+
+        const boutonConnexion =
+            document.querySelector(".btn-connexion");
+
+
+        /* ============================
+        AFFICHER / MASQUER MOT DE PASSE
+        ============================ */
+
+        togglePassword.addEventListener(
+            "click",
+            function() {
+
+                if (passwordInput.type === "password") {
+
+                    passwordInput.type = "text";
+
+                    togglePassword.textContent = "🙈";
+
+                    togglePassword.setAttribute(
+                        "aria-label",
+                        "Masquer le mot de passe"
+                    );
+
+                } else {
+
+                    passwordInput.type = "password";
+
+                    togglePassword.textContent = "👁️";
+
+                    togglePassword.setAttribute(
+                        "aria-label",
+                        "Afficher le mot de passe"
+                    );
+                }
+
+            }
+        );
+
+
+        /* ============================
+        SOUMISSION DU FORMULAIRE
+        ============================ */
 
         connexionForm.addEventListener(
             "submit",
@@ -119,6 +180,16 @@
 
                 event.preventDefault();
 
+
+                // Empêche les doubles clics
+                if (boutonConnexion.disabled) {
+                    return;
+                }
+
+
+                // ============================
+                // RÉCUPÉRATION DES DONNÉES
+                // ============================
 
                 const email =
                     document.getElementById("email")
@@ -130,13 +201,36 @@
                         .value;
 
 
-                if (!email || !password) {
+                // ============================
+                // VALIDATION
+                // ============================
+
+                if (!email) {
 
                     message.textContent =
-                        "Veuillez remplir tous les champs.";
+                        "Veuillez entrer votre adresse e-mail.";
 
                     return;
                 }
+
+
+                if (!password) {
+
+                    message.textContent =
+                        "Veuillez entrer votre mot de passe.";
+
+                    return;
+                }
+
+
+                // ============================
+                // DÉSACTIVATION DU BOUTON
+                // ============================
+
+                boutonConnexion.disabled = true;
+
+                boutonConnexion.textContent =
+                    "Connexion...";
 
 
                 try {
@@ -153,13 +247,14 @@
                                         "application/json"
                                 },
 
-                                body: JSON.stringify({
+                                body:
+                                    JSON.stringify({
 
-                                    email: email,
+                                        email: email,
 
-                                    password: password
+                                        password: password
 
-                                })
+                                    })
 
                             }
                         );
@@ -169,24 +264,36 @@
                         await response.json();
 
 
+                    // ============================
+                    // ERREUR DE CONNEXION
+                    // ============================
+
                     if (!response.ok) {
 
                         message.textContent =
                             resultat.detail ||
                             "Email ou mot de passe incorrect.";
 
+
+                        boutonConnexion.disabled =
+                            false;
+
+                        boutonConnexion.textContent =
+                            "Se connecter";
+
                         return;
                     }
 
 
-                    // Enregistrement du JWT
+                    // ============================
+                    // CONNEXION RÉUSSIE
+                    // ============================
+
                     localStorage.setItem(
                         "access_token",
                         resultat.access_token
                     );
 
-
-                    // Enregistrement du rôle
                     localStorage.setItem(
                         "role_id",
                         resultat.role_id
@@ -197,21 +304,21 @@
                         "Connexion réussie !";
 
 
-                    // Redirection selon le rôle
+                    // ============================
+                    // REDIRECTION SELON LE RÔLE
+                    // ============================
+
                     setTimeout(function() {
 
                         if (resultat.role_id === 2) {
 
-                            // Administrateur
                             window.location.href =
                                 "admin.html";
 
                         } else {
 
-                            // Étudiant
                             window.location.href =
                                 "index.html";
-
                         }
 
                     }, 500);
@@ -224,11 +331,16 @@
                     message.textContent =
                         "Impossible de contacter le serveur.";
 
+
+                    boutonConnexion.disabled =
+                        false;
+
+                    boutonConnexion.textContent =
+                        "Se connecter";
                 }
 
             }
         );
-
     </script>
 </body>
 

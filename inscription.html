@@ -66,16 +66,26 @@
                 <div class="champ">
                     <label for="password">Mot de passe</label>
 
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Entrez votre mot de passe"
-                        required
-                        minlength="6"
-                    >
-                </div>
+                    <div class="password-container">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Entrez votre mot de passe"
+                            required
+                            minlength="6"
+                        >
 
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            id="togglePassword"
+                            aria-label="Afficher le mot de passe"
+                        >
+                            👁️
+                        </button>
+                    </div>
+                </div>
                 <!-- Filière -->
                 <div class="champ">
 
@@ -122,9 +132,6 @@
                             2ème année
                         </option>
 
-                        <option value = "3">
-                            3ème année
-                        </option>
 
                     </select>
 
@@ -171,53 +178,175 @@
         const message =
             document.getElementById("message");
 
+        const passwordInput =
+            document.getElementById("password");
+
+        const togglePassword =
+            document.getElementById("togglePassword");
+
+        const boutonInscription =
+            document.querySelector(".btn-inscription");
+
+
+        /* ============================
+        AFFICHER / MASQUER MOT DE PASSE
+        ============================ */
+
+        togglePassword.addEventListener(
+            "click",
+            function() {
+
+                if (passwordInput.type === "password") {
+
+                    passwordInput.type = "text";
+
+                    togglePassword.textContent = "🙈";
+
+                    togglePassword.setAttribute(
+                        "aria-label",
+                        "Masquer le mot de passe"
+                    );
+
+                } else {
+
+                    passwordInput.type = "password";
+
+                    togglePassword.textContent = "👁️";
+
+                    togglePassword.setAttribute(
+                        "aria-label",
+                        "Afficher le mot de passe"
+                    );
+                }
+
+            }
+        );
+
+
+        /* ============================
+        SOUMISSION DU FORMULAIRE
+        ============================ */
 
         inscriptionForm.addEventListener(
             "submit",
             async function(event) {
 
-                // Empêche le rechargement de la page
                 event.preventDefault();
 
 
-                // Récupération des données
+                // Empêche les doubles clics
+                if (boutonInscription.disabled) {
+                    return;
+                }
+
+
+                // ============================
+                // RÉCUPÉRATION DES DONNÉES
+                // ============================
+
                 const nom =
-                    document.getElementById("nom").value.trim();
+                    document.getElementById("nom")
+                        .value
+                        .trim();
 
                 const prenom =
-                    document.getElementById("prenom").value.trim();
+                    document.getElementById("prenom")
+                        .value
+                        .trim();
 
                 const email =
-                    document.getElementById("email").value.trim();
+                    document.getElementById("email")
+                        .value
+                        .trim();
 
                 const password =
-                    document.getElementById("password").value;
+                    document.getElementById("password")
+                        .value;
 
                 const filiere_id =
-                    Number(document.getElementById("filiere").value);
+                    Number(
+                        document.getElementById("filiere")
+                            .value
+                    );
 
                 const niveau_id =
-                    Number(document.getElementById("niveau").value);
+                    Number(
+                        document.getElementById("niveau")
+                            .value
+                    );
 
 
-                // Vérification
-                if (
-                    !nom ||
-                    !prenom ||
-                    !email ||
-                    !password ||
-                    !filiere_id ||
-                    !niveau_id
-                ) {
+                // ============================
+                // VALIDATION
+                // ============================
+
+                if (!nom) {
 
                     message.textContent =
-                        "Veuillez remplir tous les champs.";
+                        "Veuillez entrer votre nom.";
 
                     return;
                 }
 
 
-                // Données envoyées au backend
+                if (!prenom) {
+
+                    message.textContent =
+                        "Veuillez entrer votre prénom.";
+
+                    return;
+                }
+
+
+                if (!email) {
+
+                    message.textContent =
+                        "Veuillez entrer votre adresse e-mail.";
+
+                    return;
+                }
+
+
+                if (!password) {
+
+                    message.textContent =
+                        "Veuillez entrer un mot de passe.";
+
+                    return;
+                }
+
+
+                if (password.length < 6) {
+
+                    message.textContent =
+                        "Le mot de passe doit contenir au moins 6 caractères.";
+
+                    return;
+                }
+
+
+                if (!filiere_id) {
+
+                    message.textContent =
+                        "Veuillez choisir votre filière.";
+
+                    return;
+                }
+
+
+                if (!niveau_id) {
+
+                    message.textContent =
+                        "Veuillez choisir votre niveau d'étude.";
+
+                    return;
+                }
+
+
+                // ============================
+                // DONNÉES ENVOYÉES AU BACKEND
+                // ============================
+
                 const donnees = {
 
                     nom: nom,
@@ -233,6 +362,13 @@
                     niveau_id: niveau_id
 
                 };
+
+
+                // Désactiver le bouton
+                boutonInscription.disabled = true;
+
+                boutonInscription.textContent =
+                    "Inscription...";
 
 
                 try {
@@ -260,9 +396,9 @@
                         await response.json();
 
 
-                    // ==========================================
+                    // ============================
                     // INSCRIPTION RÉUSSIE
-                    // ==========================================
+                    // ============================
 
                     if (response.ok) {
 
@@ -271,8 +407,6 @@
                             "Inscription réussie !";
 
 
-                        // Enregistrer automatiquement
-                        // la connexion de l'utilisateur
                         localStorage.setItem(
                             "access_token",
                             resultat.access_token
@@ -284,12 +418,9 @@
                         );
 
 
-                        // Réinitialiser le formulaire
                         inscriptionForm.reset();
 
 
-                        // Récupérer la page que l'utilisateur
-                        // voulait visiter avant l'inscription
                         const pageRetour =
                             localStorage.getItem(
                                 "page_apres_connexion"
@@ -298,13 +429,11 @@
 
                         if (pageRetour) {
 
-                            // Supprimer la destination mémorisée
                             localStorage.removeItem(
                                 "page_apres_connexion"
                             );
 
 
-                            // Retour vers la page demandée
                             setTimeout(function() {
 
                                 window.location.href =
@@ -314,8 +443,6 @@
 
                         } else {
 
-                            // Si aucune page n'était mémorisée,
-                            // retour à l'accueil
                             setTimeout(function() {
 
                                 window.location.href =
@@ -328,9 +455,9 @@
                     }
 
 
-                    // ==========================================
+                    // ============================
                     // ERREUR DU BACKEND
-                    // ==========================================
+                    // ============================
 
                     if (resultat.detail) {
 
@@ -340,8 +467,9 @@
 
                             message.textContent =
                                 resultat.detail
-                                    .map(erreur =>
-                                        erreur.msg
+                                    .map(
+                                        erreur =>
+                                            erreur.msg
                                     )
                                     .join(", ");
 
@@ -349,15 +477,21 @@
 
                             message.textContent =
                                 resultat.detail;
-
                         }
 
                     } else {
 
                         message.textContent =
                             "Une erreur est survenue.";
-
                     }
+
+
+                    // Réactiver le bouton
+
+                    boutonInscription.disabled = false;
+
+                    boutonInscription.textContent =
+                        "S'inscrire";
 
 
                 } catch (erreur) {
@@ -367,6 +501,11 @@
                     message.textContent =
                         "Impossible de contacter le serveur.";
 
+
+                    boutonInscription.disabled = false;
+
+                    boutonInscription.textContent =
+                        "S'inscrire";
                 }
 
             }
