@@ -143,6 +143,23 @@
     <h1>La Collecte</h1>
     <p>Gestion des matières</p>
 </header><div class="container"><a href="admin.html" class="retour">← Retour administration</a>
+    <div style="margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap;">
+
+    <button
+        type="button"
+        class="btn"
+        onclick="chargerMatieres()">
+        🔄 Actualiser
+    </button>
+
+    <button
+        type="button"
+        class="supprimer"
+        onclick="deconnecterAdmin()">
+        🚪 Déconnexion
+    </button>
+
+</div>
 
 <div class="card">
 
@@ -201,6 +218,10 @@ const token = localStorage.getItem("access_token");
 const message = document.getElementById("message");
 const liste = document.getElementById("listeMatieres");
 
+const roleId =
+    localStorage.getItem("role_id");
+
+
 if (!token) {
 
     localStorage.setItem(
@@ -208,7 +229,17 @@ if (!token) {
         window.location.href
     );
 
-    window.location.href = "connexion.html";
+    window.location.href =
+        "connexion.html";
+
+} else if (String(roleId) !== "2") {
+
+    alert(
+        "Accès refusé : cette page est réservée aux administrateurs."
+    );
+
+    window.location.href =
+        "index.html";
 
 } else {
 
@@ -243,17 +274,18 @@ async function chargerMatieres() {
         if (response.status === 401) {
 
             localStorage.removeItem("access_token");
+            localStorage.removeItem("role_id");
 
             localStorage.setItem(
                 "page_apres_connexion",
                 window.location.href
             );
 
-            window.location.href = "connexion.html";
+            window.location.href =
+                "connexion.html";
 
             return;
         }
-
 
         if (response.status === 403) {
 
@@ -459,8 +491,12 @@ async function ajouterMatiere() {
 
         if (response.status === 401) {
 
-            localStorage.removeItem(
-                "access_token"
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("role_id");
+
+            localStorage.setItem(
+                "page_apres_connexion",
+                window.location.href
             );
 
             window.location.href =
@@ -468,7 +504,6 @@ async function ajouterMatiere() {
 
             return;
         }
-
 
         if (response.status === 403) {
 
@@ -593,16 +628,20 @@ async function modifierMatiere(
 
         if (response.status === 401) {
 
-            localStorage.removeItem(
-                "access_token"
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("role_id");
+
+            localStorage.setItem(
+                "page_apres_connexion",
+                window.location.href
             );
 
             window.location.href =
                 "connexion.html";
 
             return;
-        }
 
+        }
 
         if (response.status === 403) {
 
@@ -687,8 +726,12 @@ async function supprimerMatiere(id) {
 
         if (response.status === 401) {
 
-            localStorage.removeItem(
-                "access_token"
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("role_id");
+
+            localStorage.setItem(
+                "page_apres_connexion",
+                window.location.href
             );
 
             window.location.href =
@@ -696,7 +739,6 @@ async function supprimerMatiere(id) {
 
             return;
         }
-
 
         if (response.status === 403) {
 
@@ -817,6 +859,23 @@ function echapperJS(texte) {
         .replace(/\n/g, "\\n");
 
 }
+function deconnecterAdmin() {
 
-</script></body>
+    localStorage.removeItem(
+        "access_token"
+    );
+
+    localStorage.removeItem(
+        "role_id"
+    );
+
+    localStorage.removeItem(
+        "page_apres_connexion"
+    );
+
+    window.location.href =
+        "index.html";
+}
+</script>
+</body>
 </html>

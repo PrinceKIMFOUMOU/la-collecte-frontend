@@ -119,10 +119,32 @@
     }
 </style>
 
-</head><body><header>
+</head>
+<body><header>
     <h1>La Collecte</h1>
     <p>Tableau de bord administrateur</p>
-</header><div class="container"><div class="actions">
+    <div style="margin-top:15px;">
+
+    <button
+        type="button"
+        class="btn"
+        onclick="chargerUtilisateurs()"
+    >
+        🔄 Actualiser
+    </button>
+
+    <button
+        type="button"
+        class="btn danger"
+        onclick="deconnecterAdmin()"
+    >
+        🚪 Déconnexion
+    </button>
+
+    </div>
+
+</header>
+    <div class="container"><div class="actions">
 
     <div class="card">
         <h2>👥 Utilisateurs</h2>
@@ -212,25 +234,50 @@
 </footer>
 <script>
 
-    const API_URL = "https://la-collecte-backend.onrender.com";
-
+    const API_URL =
+        "https://la-collecte-backend.onrender.com";
 
     const token =
         localStorage.getItem("access_token");
 
+    const roleId =
+        localStorage.getItem("role_id");
 
     const message =
         document.getElementById("message");
 
 
-    // Vérification du token
+    // ==========================================
+    // PROTECTION DE LA PAGE ADMIN
+    // ==========================================
+
     if (!token) {
+
+        localStorage.setItem(
+            "page_apres_connexion",
+            "admin.html"
+        );
 
         window.location.href =
             "connexion.html";
 
     }
 
+    if (token && String(roleId) !== "2") {
+
+        alert(
+            "Accès refusé : cette page est réservée aux administrateurs."
+        );
+
+        window.location.href =
+            "index.html";
+
+    }
+
+
+    // ==========================================
+    // CHARGER LES UTILISATEURS
+    // ==========================================
 
     async function chargerUtilisateurs() {
 
@@ -254,6 +301,7 @@
                 );
 
 
+            // Token invalide ou expiré
             if (response.status === 401) {
 
                 localStorage.removeItem(
@@ -264,28 +312,32 @@
                     "role_id"
                 );
 
+                localStorage.setItem(
+                    "page_apres_connexion",
+                    "admin.html"
+                );
+
                 window.location.href =
                     "connexion.html";
 
                 return;
-
             }
 
 
+            // Pas administrateur
             if (response.status === 403) {
 
                 message.textContent =
-                    "Accès refusé : cette page est réservée aux administrateurs.";
+                    "Accès refusé : vous n'êtes pas administrateur.";
 
                 return;
-
             }
 
 
             if (!response.ok) {
 
                 throw new Error(
-                    "Erreur lors du chargement des utilisateurs."
+                    "Erreur lors du chargement."
                 );
 
             }
@@ -304,18 +356,33 @@
             table.innerHTML = "";
 
 
+            // Aucun utilisateur
+            if (utilisateurs.length === 0) {
+
+                table.innerHTML = `
+                    <tr>
+                        <td
+                            colspan="7"
+                            style="text-align:center;"
+                        >
+                            Aucun utilisateur inscrit.
+                        </td>
+                    </tr>
+                `;
+
+                message.textContent =
+                    "Aucun utilisateur trouvé.";
+
+                return;
+            }
+
+
+            // Affichage des utilisateurs
             utilisateurs.forEach(user => {
 
                 const ligne =
                     document.createElement("tr");
 
-
-                /*
-                 * L'API peut retourner les noms
-                 * directement ou uniquement les IDs.
-                 *
-                 * On affiche donc la valeur disponible.
-                 */
 
                 const role =
                     user.role ||
@@ -344,43 +411,31 @@
                 ligne.innerHTML = `
 
                     <td>
-                        ${user.id}
+                        ${echapperHTML(user.id)}
                     </td>
 
                     <td>
-                        ${echapperHTML(
-                            user.nom
-                        )}
+                        ${echapperHTML(user.nom)}
                     </td>
 
                     <td>
-                        ${echapperHTML(
-                            user.prenom
-                        )}
+                        ${echapperHTML(user.prenom)}
                     </td>
 
                     <td>
-                        ${echapperHTML(
-                            user.email
-                        )}
+                        ${echapperHTML(user.email)}
                     </td>
 
                     <td>
-                        ${echapperHTML(
-                            String(role)
-                        )}
+                        ${echapperHTML(String(role))}
                     </td>
 
                     <td>
-                        ${echapperHTML(
-                            String(filiere)
-                        )}
+                        ${echapperHTML(String(filiere))}
                     </td>
 
                     <td>
-                        ${echapperHTML(
-                            String(niveau)
-                        )}
+                        ${echapperHTML(String(niveau))}
                     </td>
 
                 `;
@@ -407,6 +462,10 @@
     }
 
 
+    // ==========================================
+    // ÉCHAPPEMENT HTML
+    // ==========================================
+
     function echapperHTML(texte) {
 
         const div =
@@ -416,6 +475,44 @@
             texte ?? "";
 
         return div.innerHTML;
+
+    }
+
+
+    // ==========================================
+    // DÉCONNEXION
+    // ==========================================
+
+    function deconnecterAdmin() {
+
+        localStorage.removeItem(
+            "access_token"
+        );
+
+        localStorage.removeItem(
+            "role_id"
+        );
+
+        localStorage.removeItem(
+            "page_apres_connexion"
+        );
+
+        window.location.href =
+            "index.html";
+
+    }
+
+
+    // ==========================================
+    // CHARGEMENT AUTOMATIQUE
+    // ==========================================
+
+    if (
+        token &&
+        String(roleId) === "2"
+    ) {
+
+        chargerUtilisateurs();
 
     }
 

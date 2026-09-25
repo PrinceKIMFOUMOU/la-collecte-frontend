@@ -166,6 +166,23 @@
         <a href="admin.html" class="retour">
             ← Retour administration
         </a>
+        <div style="margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap;">
+
+            <button
+                type="button"
+                class="btn principal"
+                onclick="chargerRessources()">
+                🔄 Actualiser
+            </button>
+
+            <button
+                type="button"
+                class="btn"
+                onclick="deconnecterAdmin()">
+                🚪 Déconnexion
+            </button>
+
+        </div>
 
         <!-- ========================= -->
         <!-- AJOUT -->
@@ -254,8 +271,13 @@
                     required
                 >
 
-                <button type="submit" class="btn principal">
+                <button
+                    type="submit"
+                    class="btn principal"
+                    id="btnAjouterRessource">
+
                     Ajouter la ressource
+
                 </button>
 
             </form>
@@ -461,13 +483,30 @@
     // VÉRIFICATION TOKEN
     // ==========================================
 
-    if (!token) {
+const roleId =
+    localStorage.getItem("role_id");
 
-        window.location.href =
-            "connexion.html";
 
-    }
+if (!token) {
 
+    localStorage.setItem(
+        "page_apres_connexion",
+        window.location.href
+    );
+
+    window.location.href =
+        "connexion.html";
+
+} else if (String(roleId) !== "2") {
+
+    alert(
+        "Accès refusé : cette page est réservée aux administrateurs."
+    );
+
+    window.location.href =
+        "index.html";
+
+}
 
     // ==========================================
     // CHARGEMENT INITIAL
@@ -671,15 +710,18 @@
 
             if (response.status === 401) {
 
-                localStorage.removeItem(
-                    "access_token"
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("role_id");
+
+                localStorage.setItem(
+                    "page_apres_connexion",
+                    window.location.href
                 );
 
                 window.location.href =
                     "connexion.html";
 
                 return;
-
             }
 
 
@@ -847,8 +889,12 @@
 
             if (response.status === 401) {
 
-                localStorage.removeItem(
-                    "access_token"
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("role_id");
+
+                localStorage.setItem(
+                    "page_apres_connexion",
+                    window.location.href
                 );
 
                 window.location.href =
@@ -965,6 +1011,18 @@
 
                 event.preventDefault();
 
+                const bouton =
+                    document.getElementById(
+                        "btnAjouterRessource"
+                    );
+
+                if (bouton.disabled) {
+                    return;
+                }
+
+                bouton.disabled = true;
+                bouton.textContent =
+                    "Ajout en cours...";
 
                 const fichier =
                     document.getElementById(
@@ -1117,8 +1175,12 @@
 
                     if (response.status === 401) {
 
-                        localStorage.removeItem(
-                            "access_token"
+                        localStorage.removeItem("access_token");
+                        localStorage.removeItem("role_id");
+
+                        localStorage.setItem(
+                            "page_apres_connexion",
+                            window.location.href
                         );
 
                         window.location.href =
@@ -1229,15 +1291,18 @@
 
             if (response.status === 401) {
 
-                localStorage.removeItem(
-                    "access_token"
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("role_id");
+
+                localStorage.setItem(
+                    "page_apres_connexion",
+                    window.location.href
                 );
 
                 window.location.href =
                     "connexion.html";
 
                 return;
-
             }
 
 
@@ -1629,8 +1694,12 @@
 
                     if (response.status === 401) {
 
-                        localStorage.removeItem(
-                            "access_token"
+                        localStorage.removeItem("access_token");
+                        localStorage.removeItem("role_id");
+
+                        localStorage.setItem(
+                            "page_apres_connexion",
+                            window.location.href
                         );
 
                         window.location.href =
@@ -1814,8 +1883,12 @@
 
             if (response.status === 401) {
 
-                localStorage.removeItem(
-                    "access_token"
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("role_id");
+
+                localStorage.setItem(
+                    "page_apres_connexion",
+                    window.location.href
                 );
 
                 window.location.href =
@@ -1930,15 +2003,18 @@
 
             if (response.status === 401) {
 
-                localStorage.removeItem(
-                    "access_token"
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("role_id");
+
+                localStorage.setItem(
+                    "page_apres_connexion",
+                    window.location.href
                 );
 
                 window.location.href =
                     "connexion.html";
 
                 return;
-
             }
 
 
@@ -2093,6 +2169,24 @@
 
         return div.innerHTML;
 
+    }
+
+    function deconnecterAdmin() {
+
+        localStorage.removeItem(
+            "access_token"
+        );
+
+        localStorage.removeItem(
+            "role_id"
+        );
+
+        localStorage.removeItem(
+            "page_apres_connexion"
+        );
+
+        window.location.href =
+            "index.html";
     }
 
     </script>

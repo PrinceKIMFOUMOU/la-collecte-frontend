@@ -68,7 +68,7 @@
             </nav>
 
 
-            <div class="auth-buttons">
+            <div class="auth-buttons" id="authButtons">
 
                 <!-- Correction : le bouton est maintenant un vrai lien -->
 
@@ -425,36 +425,167 @@
 
     <script>
 
+        // ==================================================
+        // GESTION DE LA SESSION UTILISATEUR
+        // ==================================================
+
+        const authButtons =
+            document.getElementById("authButtons");
+
+
+        function afficherEtatConnexion() {
+
+            const token =
+                localStorage.getItem("access_token");
+
+
+            // ============================
+            // UTILISATEUR CONNECTÉ
+            // ============================
+
+            if (token) {
+
+                authButtons.innerHTML = `
+
+                    <button
+                        type="button"
+                        class="btn btn-outline"
+                        id="btnDeconnexion"
+                    >
+                        Déconnexion
+                    </button>
+
+                `;
+
+
+                const btnDeconnexion =
+                    document.getElementById("btnDeconnexion");
+
+
+                btnDeconnexion.addEventListener(
+                    "click",
+                    function() {
+
+                        deconnecterUtilisateur();
+
+                    }
+                );
+
+
+                return;
+            }
+
+
+            // ============================
+            // UTILISATEUR NON CONNECTÉ
+            // ============================
+
+            authButtons.innerHTML = `
+
+                <a
+                    href="connexion.html"
+                    class="btn btn-outline"
+                >
+                    Connexion
+                </a>
+
+                <a
+                    href="inscription.html"
+                    class="btn btn-primary"
+                >
+                    Inscription
+                </a>
+
+            `;
+        }
+
+
+
+        // ==================================================
+        // DÉCONNEXION
+        // ==================================================
+
+        function deconnecterUtilisateur() {
+
+            // Supprimer le JWT
+            localStorage.removeItem("access_token");
+
+
+            // Supprimer le rôle
+            localStorage.removeItem("role_id");
+
+
+            // Supprimer éventuellement
+            // une ancienne destination mémorisée
+            localStorage.removeItem(
+                "page_apres_connexion"
+            );
+
+
+            // Actualiser la page
+            window.location.href =
+                "index.html";
+        }
+
+
+
+        // Vérifier l'état de connexion
+        // dès le chargement de la page
+
+        afficherEtatConnexion();
+
+
+
+        // ==================================================
+        // RECHERCHE
+        // ==================================================
+
         // Récupération de la barre de recherche
+
         const searchInput =
             document.getElementById("searchInput");
 
 
         // Récupération du bouton rechercher
+
         const searchButton =
             document.getElementById("searchButton");
 
 
         // Récupération de la zone de message
+
         const searchMessage =
             document.getElementById("searchMessage");
 
 
 
-        // Fonction de recherche
+        // ==================================================
+        // FONCTION DE RECHERCHE
+        // ==================================================
+
         function rechercher() {
 
             // Récupérer le texte écrit
+
             let recherche =
-                searchInput.value.trim().toLowerCase();
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
 
 
             // Supprimer les accents
-            recherche = recherche.normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "");
+
+            recherche =
+                recherche
+                    .normalize("NFD")
+                    .replace(
+                        /[\u0300-\u036f]/g,
+                        ""
+                    );
 
 
             // Vérifier si la recherche est vide
+
             if (recherche === "") {
 
                 searchMessage.textContent =
@@ -464,8 +595,9 @@
             }
 
 
+
             // ============================
-            // RECHERCHE TPE / TD
+            // RECHERCHE TD
             // ============================
 
             if (
@@ -474,7 +606,8 @@
                 recherche.includes("travaux diriges")
             ) {
 
-                window.location.href = "TD.html";
+                window.location.href =
+                    "TD.html";
 
                 return;
             }
@@ -491,7 +624,8 @@
                 recherche.includes("controle continu")
             ) {
 
-                window.location.href = "CC.html";
+                window.location.href =
+                    "CC.html";
 
                 return;
             }
@@ -507,7 +641,8 @@
                 recherche.includes("examen")
             ) {
 
-                window.location.href = "Session.html";
+                window.location.href =
+                    "Session.html";
 
                 return;
             }
@@ -524,7 +659,8 @@
                 recherche.includes("lecon")
             ) {
 
-                window.location.href = "Cours.html";
+                window.location.href =
+                    "Cours.html";
 
                 return;
             }
@@ -543,9 +679,9 @@
 
 
 
-        // ============================
+        // ==================================================
         // CLIC SUR RECHERCHER
-        // ============================
+        // ==================================================
 
         searchButton.addEventListener(
             "click",
@@ -554,9 +690,9 @@
 
 
 
-        // ============================
+        // ==================================================
         // TOUCHE ENTRÉE
-        // ============================
+        // ==================================================
 
         searchInput.addEventListener(
             "keydown",
