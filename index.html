@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -115,7 +114,7 @@
                 <input
                     type="text"
                     id="searchInput"
-                    placeholder="Rechercher TD, Contrôle continue, Session, cours..."
+                    placeholder="Rechercher TD, CC, Session, cours ou un sujet (ex: Python)..."
                 >
 
 
@@ -133,9 +132,15 @@
             </div>
 
 
-            <!-- Message affiché en cas de recherche incorrecte -->
+            <!-- Message affiché en cas de recherche -->
 
-            <p id="searchMessage"></p>
+            <p id="searchMessage" style="margin-top: 15px; font-weight: 600;"></p>
+
+            <!-- Zone de résultats dynamique pour les PDF trouvés -->
+            <div id="searchResultsContainer" style="display: none; margin-top: 25px; text-align: left;">
+                <h3 style="color: #ffffff; margin-bottom: 15px;">Résultats de la recherche :</h3>
+                <div id="searchResultsGrid" class="features-grid"></div>
+            </div>
 
         </div>
 
@@ -274,8 +279,8 @@
                     </h3>
 
                     <p>
-                        Une plateforme crée par les élèves ingénieur
-                        <strong>GNABE NGOI GLODY</strong>,<strong>KIMFOUMOU Prince</strong> et <strong>ENATA Noblèsse</strong>
+                        Une plateforme créée par les élèves ingénieur
+                        <strong>GNABE NGOI GLODY</strong>, <strong>KIMFOUMOU Prince</strong> et <strong>ENATA Noblèsse</strong>
                         dans le but d'aider les étudiants à se préparer
                         efficacement durant toute leur formation.
                     </p>
@@ -420,10 +425,11 @@
 
     <!-- ==================================================
          JAVASCRIPT
-         Le JavaScript est directement dans index.html
     ================================================== -->
 
     <script>
+
+        const API_URL = "https://la-collecte-backend.onrender.com";
 
         // ==================================================
         // GESTION DE LA SESSION UTILISATEUR
@@ -537,146 +543,139 @@
 
 
         // ==================================================
-        // RECHERCHE
+        // RECHERCHE DYNAMIQUE ET INSTANTANÉE
         // ==================================================
-
-        // Récupération de la barre de recherche
 
         const searchInput =
             document.getElementById("searchInput");
 
-
-        // Récupération du bouton rechercher
-
         const searchButton =
             document.getElementById("searchButton");
-
-
-        // Récupération de la zone de message
 
         const searchMessage =
             document.getElementById("searchMessage");
 
+        const searchResultsContainer =
+            document.getElementById("searchResultsContainer");
+
+        const searchResultsGrid =
+            document.getElementById("searchResultsGrid");
 
 
-        // ==================================================
-        // FONCTION DE RECHERCHE
-        // ==================================================
+        async function rechercher() {
 
-        function rechercher() {
+            const query = searchInput.value.trim();
+            const token = localStorage.getItem("access_token");
 
-            // Récupérer le texte écrit
+            searchResultsGrid.innerHTML = "";
+            searchResultsContainer.style.display = "none";
+            searchMessage.textContent = "";
 
-            let recherche =
-                searchInput.value
-                    .trim()
-                    .toLowerCase();
-
-
-            // Supprimer les accents
-
-            recherche =
-                recherche
-                    .normalize("NFD")
-                    .replace(
-                        /[\u0300-\u036f]/g,
-                        ""
-                    );
-
-
-            // Vérifier si la recherche est vide
-
-            if (recherche === "") {
-
-                searchMessage.textContent =
-                    "Veuillez entrer un élément à rechercher.";
-
+            if (!query) {
+                searchMessage.textContent = "Veuillez entrer un élément à rechercher (ex: Python, Mathématiques, TD...).";
+                searchMessage.style.color = "#fca5a5";
                 return;
             }
 
+            // Normalisation pour raccourcis vers pages
+            const queryNorm = query
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
 
-
-            // ============================
-            // RECHERCHE TD
-            // ============================
-
-            if (
-                recherche === "td" ||
-                recherche === "tpe" ||
-                recherche.includes("travaux diriges")
-            ) {
-
-                window.location.href =
-                    "TD.html";
-
+            if (queryNorm === "td" || queryNorm === "tpe" || queryNorm.includes("travaux diriges")) {
+                window.location.href = "TD.html";
                 return;
             }
 
-
-
-            // ============================
-            // RECHERCHE CC
-            // ============================
-
-            if (
-                recherche === "cc" ||
-                recherche.includes("controle") ||
-                recherche.includes("controle continu")
-            ) {
-
-                window.location.href =
-                    "CC.html";
-
+            if (queryNorm === "cc" || queryNorm.includes("controle") || queryNorm.includes("controle continu")) {
+                window.location.href = "CC.html";
                 return;
             }
 
-
-
-            // ============================
-            // RECHERCHE SESSION
-            // ============================
-
-            if (
-                recherche.includes("session") ||
-                recherche.includes("examen")
-            ) {
-
-                window.location.href =
-                    "Session.html";
-
+            if (queryNorm.includes("session") || queryNorm.includes("examen")) {
+                window.location.href = "Session.html";
                 return;
             }
 
-
-
-            // ============================
-            // RECHERCHE COURS
-            // ============================
-
-            if (
-                recherche === "cours" ||
-                recherche.includes("formation") ||
-                recherche.includes("lecon")
-            ) {
-
-                window.location.href =
-                    "Cours.html";
-
+            if (queryNorm === "cours" || queryNorm.includes("formation") || queryNorm.includes("lecon")) {
+                window.location.href = "Cours.html";
                 return;
             }
 
+            // Vérification de connexion
+            if (!token) {
+                searchMessage.innerHTML = `Veuillez vous <a href="connexion.html" style="color: #60a5fa; text-decoration: underline;">connecter</a> pour voir les PDF correspondant à "${query}".`;
+                searchMessage.style.color = "#fef08a";
+                return;
+            }
 
+            searchMessage.textContent = "Recherche en cours...";
+            searchMessage.style.color = "#ffffff";
 
-            // ============================
-            // AUCUN RÉSULTAT
-            // ============================
+            try {
+                const response = await fetch(`${API_URL}/ressources?search=${encodeURIComponent(query)}`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
 
-            searchMessage.textContent =
-                "Aucun résultat trouvé pour : " +
-                searchInput.value;
+                if (response.status === 401) {
+                    deconnecterUtilisateur();
+                    window.location.href = "connexion.html";
+                    return;
+                }
 
+                if (!response.ok) {
+                    throw new Error("Erreur de récupération");
+                }
+
+                const data = await response.json();
+
+                if (data.length === 0) {
+                    searchMessage.textContent = `Aucun résultat trouvé pour : "${query}"`;
+                    searchMessage.style.color = "#fca5a5";
+                    return;
+                }
+
+                searchMessage.textContent = `${data.length} ressource(s) trouvée(s) :`;
+                searchMessage.style.color = "#86efac";
+                searchResultsContainer.style.display = "block";
+
+                data.forEach(item => {
+                    const card = document.createElement("div");
+                    card.className = "feature-card";
+                    card.style.display = "flex";
+                    card.style.flexDirection = "column";
+                    card.style.justifyContent = "space-between";
+
+                    card.innerHTML = `
+                        <div>
+                            <div class="feature-icon">
+                                <i class="fas fa-file-pdf" style="color: #ef4444;"></i>
+                            </div>
+                            <h3>${item.titre}</h3>
+                            <p><strong>Matière :</strong> ${item.matiere}</p>
+                            <p style="font-size: 0.85rem; color: #64748b;">
+                                ${item.type_ressource} • ${item.niveau} • ${item.semestre}
+                            </p>
+                        </div>
+                        <a href="${API_URL}/ressources/${item.id}/fichier" 
+                           target="_blank" 
+                           class="btn btn-primary" 
+                           style="margin-top: 15px; text-align: center; text-decoration: none;">
+                            <i class="fas fa-eye"></i> Ouvrir le PDF
+                        </a>
+                    `;
+                    searchResultsGrid.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error("Erreur de recherche :", error);
+                searchMessage.textContent = "Erreur de connexion au serveur.";
+                searchMessage.style.color = "#fca5a5";
+            }
         }
-
 
 
         // ==================================================
@@ -687,7 +686,6 @@
             "click",
             rechercher
         );
-
 
 
         // ==================================================
