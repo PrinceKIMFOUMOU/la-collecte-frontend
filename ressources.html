@@ -226,10 +226,6 @@ if (!token) {
 
 async function chargerRessources() {
 
-    /*
-     * Les 4 paramètres sont obligatoires.
-     */
-
     if (
         !niveauId ||
         !semestreId ||
@@ -473,169 +469,21 @@ async function chargerRessources() {
 
 
 /* ==========================================
-   OUVRIR LE PDF
+   OUVRIR LE PDF (INSTANTANÉ)
 ========================================== */
 
-async function ouvrirPDF(ressourceId) {
+function ouvrirPDF(ressourceId) {
 
-    const nouvelleFenetre = window.open("", "_blank");
-
-
-    if (!nouvelleFenetre) {
-        alert("Le navigateur a bloqué l'ouverture du PDF.");
-        return;
-    }
-
-    const token =
-        localStorage.getItem("access_token");
-
+    const token = localStorage.getItem("access_token");
 
     if (!token) {
-
-        localStorage.setItem(
-            "pdf_a_ouvrir",
-            String(ressourceId)
-        );
-
-        localStorage.setItem(
-            "page_pdf_retour",
-            window.location.href
-        );
-
-        window.location.href =
-            "connexion.html";
-
+        localStorage.setItem("page_apres_connexion", window.location.href);
+        window.location.href = "connexion.html";
         return;
     }
 
-
-    try {
-
-        const response = await fetch(
-            `${API_URL}/ressources/${ressourceId}/fichier`,
-            {
-                method: "GET",
-
-                headers: {
-                    "Authorization":
-                        "Bearer " + token
-                }
-            }
-        );
-
-
-        /* ================================
-           TOKEN EXPIRÉ
-        ================================= */
-
-        if (response.status === 401) {
-
-            localStorage.removeItem(
-                "access_token"
-            );
-
-            localStorage.removeItem(
-                "role_id"
-            );
-
-
-            localStorage.setItem(
-                "pdf_a_ouvrir",
-                String(ressourceId)
-            );
-
-
-            localStorage.setItem(
-                "page_pdf_retour",
-                window.location.href
-            );
-
-
-            window.location.href =
-                "connexion.html";
-
-            return;
-        }
-
-
-        if (response.status === 403) {
-
-            alert(
-                "Vous n'avez pas accès à cette ressource."
-            );
-
-            return;
-        }
-
-
-        if (!response.ok) {
-
-            const erreur =
-                await response.json().catch(
-                    () => ({})
-                );
-
-
-            throw new Error(
-                erreur.detail ||
-                "Impossible d'ouvrir le PDF."
-            );
-        }
-
-
-        const blob =
-            await response.blob();
-
-
-        const url =
-            window.URL.createObjectURL(blob);
-
- /*==========================       
-        const nouvelleFenetre =
-            window.open(
-                url,
-                "_blank"
-            );
-==========================*/
-
-        nouvelleFenetre.location.href = url;
-/*============================
-        if (!nouvelleFenetre) {
-
-            alert(
-                "Le navigateur a bloqué l'ouverture du PDF. Autorisez les fenêtres contextuelles."
-            );
-
-        }
-=============================*/
-
-        /*
-         * Libération de l'URL temporaire
-         * après un court délai.
-         */
-
-        setTimeout(() => {
-
-            window.URL.revokeObjectURL(url);
-
-        }, 60000);
-
-
-    } catch (error) {
-
-        console.error(
-            "Erreur ouverture PDF :",
-            error
-        );
-
-
-        alert(
-            error.message ||
-            "Impossible d'ouvrir le PDF."
-        );
-
-    }
-
+    // Ouvre directement l'URL servie par FastAPI sans passer par un téléchargement blob
+    window.open(`${API_URL}/ressources/${ressourceId}/fichier`, "_blank");
 }
 
 
